@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#ffffff">
+    <title>ผู้พิชิตการหารยาว V219 (Prince Crown)</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js" onerror="window.html2canvasLoadError=true"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=Chakra+Petch:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+        :root {
+            --primary-color: #2E86C1;
+            --secondary-color: #85C1E9;
+            --bg-color: #EBF5FB;
+            --correct-bg: #D5F5E3;
+            --correct-text: #196F3D;
+            --wrong-bg: #FADBD8;
+            --wrong-text: #943126;
+            --partial-bg: #F0F8FF;
+            --partial-border: #3498DB;
+            --focus-bg: #D6EAF8;
+            --scrollbar-width: 6px;
+            --grid-gap-right: 4px;
+        }
+
+        @media (pointer: coarse) { :root { --scrollbar-width: 0px; } }
+
+        html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#AED6F1 15%, transparent 16%), radial-gradient(#AED6F1 15%, transparent 16%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: #333; user-select: none;
+        }
+
+        .card {
+            background: white; width: 100%; max-width: 900px;
+            height: 92vh; height: 92dvh; max-height: 950px;
+            border-radius: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            display: flex; flex-direction: column; position: relative; overflow: hidden; 
+            border: 6px solid #fff;
+            contain: content; 
+        }
+
+        .hidden { display: none !important; }
+        .step-hidden { visibility: hidden !important; pointer-events: none !important; }
+        .division-body .step-hidden { display: none !important; }
+        
+        .game-content-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; flex: 1; min-height: 0; overflow: hidden; position: relative; }
+        
+        .calculation-area { display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 15px; width: 100%; flex: 1; min-height: 0; overflow: hidden; padding-top: 10px; }
+
+        .method-label-container { display: flex; align-items: center; justify-content: flex-end; height: 50px; margin-top: 0; padding-top: 0 !important; flex-shrink: 0; }
+        .method-label { font-size: 22px; font-weight: bold; color: #333; white-space: nowrap; }
+
+        .grid-stack-container { display: flex; flex-direction: column; align-items: center; min-width: 0; height: 100%; }
+
+        .grid-scroll-wrapper { display: flex; flex-direction: column; align-items: center; overflow-y: auto; overflow-x: hidden; width: 100%; flex: 1; padding-right: var(--grid-gap-right); padding-bottom: 20px; min-height: 0; }
+        @media (pointer: fine) { .grid-scroll-wrapper { scrollbar-gutter: stable; } }
+
+        .answer-section { margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 24px; font-weight: bold; width: 100%; flex-wrap: wrap; padding-bottom: 40px; }
+        .answer-label { position: relative; margin-right: 5px; }
+        .answer-label::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 100%; height: 3px; border-top: 2px solid #000; border-bottom: 2px solid #000; box-sizing: content-box; }
+        
+        #bottom-answer-area { display: none !important; }
+
+        .grid-scroll-wrapper, .multi-scroll-area { -ms-overflow-style: auto; scrollbar-width: thin; }
+        ::-webkit-scrollbar { width: var(--scrollbar-width); height: var(--scrollbar-width); }
+        ::-webkit-scrollbar-track { background: #f0f3f8; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb { background: #BDC3C7; border-radius: 5px; border: 2px solid #f0f3f8; }
+
+        #splash-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease-out; }
+        .splash-logo-container { width: 120px; height: 120px; margin-bottom: 20px; animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); filter: drop-shadow(0 0 15px rgba(243, 156, 18, 0.4)); }
+        .splash-title { font-family: 'Chakra Petch', sans-serif; font-size: 2rem; font-weight: 700; color: #2E86C1; opacity: 0; animation: slideUp 0.8s ease-out 0.3s forwards; text-align: center; line-height: 1.2; padding: 0 20px; }
+        .splash-loader { width: 40px; height: 4px; background: #D6EAF8; margin-top: 15px; border-radius: 2px; overflow: hidden; position: relative; }
+        .splash-loader::after { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: #F39C12; animation: loading 2s ease-in-out forwards; }
+        @keyframes loading { 0% { width: 0%; } 100% { width: 100%; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        #menu-screen { display: flex; flex-direction: column; width: 100%; height: 100%; flex: 1 1 auto; min-height: 0; padding: 1.5rem; padding-bottom: 0.5rem; box-sizing: border-box; overflow: hidden; position: relative; }
+        #game-screen { display: flex; flex-direction: column; width: 100%; height: 100%; padding: 1rem 1.2rem; box-sizing: border-box; overflow: hidden; }
+
+        .menu-logo-area { text-align: center; margin-bottom: 10px; flex-shrink: 0; padding-top: 20px; }
+        .logo-title-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 5px; }
+        .mini-logo-svg { width: 45px; height: 45px; filter: drop-shadow(0 2px 4px rgba(243, 156, 18, 0.3)); }
+        h1 { color: #1B4F72; margin: 0; font-size: clamp(1.4rem, 4vw, 1.8rem); font-family: 'Chakra Petch', sans-serif; font-weight: 700; line-height: 1.2; }
+        .subject-header { font-size: clamp(0.85rem, 3vw, 1.1rem); font-weight: 600; color: #5D6D7E; margin: 2px 0 5px 0; }
+        .grade-header { font-size: clamp(0.9rem, 2.5vw, 1rem); font-weight: 600; color: #2E86C1; background-color: #D6EAF8; padding: 4px 18px; border-radius: 50px; display: inline-block; margin: 2px 0 8px 0; }
+        .btn-help-top { position: absolute; top: 15px; right: 15px; background: #FFFFFF; color: #2E86C1; border: 2px solid #AED6F1; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 20; transition: all 0.2s ease; }
+        .btn-help-top:hover { transform: translateY(-2px); box-shadow: 0 6px 8px rgba(0,0,0,0.15); border-color: #2E86C1; } .btn-help-top svg { width: 24px; height: 24px; fill: #2E86C1; }
+
+        .scroll-area { 
+            flex: 1; overflow-y: auto; overflow-x: hidden; width: 100%; min-height: 0; padding-right: 2px; margin-bottom: 5px; -webkit-overflow-scrolling: touch;
+            background: linear-gradient(180deg, #EBF5FB 0%, #D6EAF8 100%);
+        }
+        .scroll-area::-webkit-scrollbar { width: 6px; }
+        .scroll-area::-webkit-scrollbar-track { background: transparent; }
+        .scroll-area::-webkit-scrollbar-thumb { background-color: #BDC3C7; border-radius: 10px; }
+
+        /* --- 🌟 Star Map Zig-Zag Layout --- */
+        .star-map-container { display: flex; flex-direction: column; align-items: center; padding: 20px 10px; position: relative; max-width: 500px; margin: 0 auto; }
+        .map-row { display: flex; align-items: center; width: 100%; margin-bottom: 50px; position: relative; z-index: 2; }
+
+        .map-row:nth-child(odd) { justify-content: flex-start; padding-left: 10px; }
+        .map-row:nth-child(odd) .star-node { order: 1; }
+        .map-row:nth-child(odd) .mission-label { order: 2; margin-left: 15px; text-align: left; border-top-left-radius: 0; }
+        .map-row:nth-child(odd)::before {
+            content: ''; position: absolute; z-index: -1; top: 50px; left: 50px; width: calc(100% - 100px); height: calc(100% + 50px);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M 0 0 C 0 60, 100 40, 100 100' stroke='%23BDC3C7' stroke-width='4' fill='none' stroke-dasharray='6, 8' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-size: 100% 100%;
+        }
+
+        .map-row:nth-child(even) { justify-content: flex-end; padding-right: 10px; }
+        .map-row:nth-child(even) .star-node { order: 2; }
+        .map-row:nth-child(even) .mission-label { order: 1; margin-right: 15px; text-align: right; border-top-right-radius: 0; }
+        .map-row:nth-child(even)::before {
+            content: ''; position: absolute; z-index: -1; top: 50px; right: 50px; width: calc(100% - 100px); height: calc(100% + 50px);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M 100 0 C 100 60, 0 40, 0 100' stroke='%23BDC3C7' stroke-width='4' fill='none' stroke-dasharray='6, 8' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-size: 100% 100%;
+        }
+        .map-row:last-child::before { display: none; }
+
+        /* --- 🌟 1. ดาวปกติ (1-8): เส้นขอบบาง 1.0 + สีเหลืองนวล --- */
+        .star-node {
+            background: transparent !important; border: none !important; box-shadow: none !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z' fill='%23FFF176' stroke='%23F9A825' stroke-width='1.0' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important; background-position: center center !important; background-size: contain !important;
+            filter: drop-shadow(0 4px 0 #F57F17) !important;
+            width: 85px !important; height: 85px !important;
+            display: flex !important; justify-content: center !important; align-items: center !important; padding: 0 !important;
+            font-family: 'Chakra Petch', sans-serif !important; font-size: 1.8rem !important; font-weight: 800 !important;
+            color: #795548 !important; text-shadow: 0px 1px 0px rgba(255,255,255,0.6) !important;
+            z-index: 5; flex-shrink: 0; transition: transform 0.1s;
+        }
+        .star-node:active { transform: translateY(4px) scale(0.95) !important; filter: drop-shadow(0 0 0 #F57F17) !important; }
+
+        /* --- 👑 2. มงกุฎเจ้าชาย (ด่าน 9): ทรงเจ้าชาย + ไม่ซ้อน + เส้นบาง 0.8 --- */
+        .lvl-mix .star-node {
+            width: 110px !important; height: 110px !important; padding: 0 !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='30 5 40 25'%3E%3Cpath d='M35 25L32 12L42 18L50 8L58 18L68 12L65 25H35Z' fill='%23FFD700' stroke='%23F1C40F' stroke-width='0.8' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='18' r='3' fill='%23E74C3C'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important; background-position: center center !important; background-size: 85% !important;
+            filter: drop-shadow(0 4px 0 #B7950B) !important;
+            color: transparent !important; font-size: 0 !important; text-shadow: none !important;
+        }
+        .lvl-mix .star-node > * { display: none !important; }
+        .lvl-mix .star-node:active { filter: drop-shadow(0 0 0 #B7950B) !important; transform: translateY(4px) scale(0.95) !important; }
+        .lvl-mix .mission-label { border-bottom: 3px solid #F5B7B1; background: #FDEDEC; }
+
+        /* 🔹 ป้ายข้อความ */
+        .mission-label {
+            background: white; padding: 10px 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            max-width: 60%; cursor: pointer; transition: transform 0.2s; position: relative;
+            height: auto; min-height: 50px; display: flex; flex-direction: column; justify-content: center;
+        }
+        .mission-label:hover { transform: scale(1.05); }
+        .mission-main { font-weight: 800; font-size: 0.95rem; color: #2C3E50; line-height: 1.2; display: block; }
+        .mission-sub { font-size: 0.75rem; color: #7F8C8D; margin-top: 2px; display: block; }
+        .lvl-1 .mission-label { border-bottom: 3px solid #AED6F1; }
+        .lvl-2 .mission-label { border-bottom: 3px solid #D2B4DE; }
+        .lvl-3 .mission-label { border-bottom: 3px solid #FAD7A0; }
+
+        /* ปรับแต่ง Modal เลือกโหมด */
+        .mode-select-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        .mode-select-btn { padding: 20px 10px; border-radius: 15px; border: none; font-size: 1rem; font-weight: bold; color: white; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.1s, box-shadow 0.1s; }
+        .mode-select-btn:active { transform: translateY(3px); box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .mode-icon { font-size: 2rem; margin-bottom: 5px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
+        
+        /* 🎨 ไอคอน Modal สีสดใส */
+        .mode-icon svg { fill: initial !important; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2)); width: 55px; height: 55px; }
+        
+        /* 🔥 แก้ไขด่วน: ปุ่ม X สีขาว */
+        .btn-close-modal svg { fill: white !important; width: 24px; height: 24px; }
+
+        .screen-footer { flex-shrink: 0; padding-top: 12px; padding-bottom: 12px; margin-top: 5px; border-top: 2px solid #D6EAF8; width: 100%; background: white; display: flex; justify-content: center; text-align: center; }
+        .credit-footer { color: #5D6D7E; font-size: clamp(0.75rem, 2.5vw, 0.9rem); line-height: 1.4; }
+        .credit-name { color: #2E86C1; font-weight: bold; font-size: clamp(0.85rem, 3vw, 1rem); }
+        .screen-header { flex-shrink: 0; padding-bottom: 5px; z-index: 10; width: 100%; }
+        .top-nav-bar { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 5px; gap: 10px; flex-wrap: nowrap; }
+        #mode-display-wrapper { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
+        .game-header-badge { display: inline-flex; align-items: center; gap: 5px; background-color: transparent !important; border: none !important; border-radius: 0; padding: 5px 0; font-size: 1rem; color: #333; height: 40px; box-sizing: border-box; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: none !important; }
+        .header-tag { flex-shrink: 0; color: white !important; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; height: 26px; padding: 0 14px; border-radius: 999px; padding-bottom: 2px; }
+        .header-mission { font-weight: 700; color: #2E86C1; font-size: 0.95rem; overflow: hidden; text-overflow: ellipsis; padding-bottom: 1px; margin-left: 2px; }
+        #scoring-info-area { width: 100%; text-align: center; min-height: 34px; display: flex; align-items: center; justify-content: center; margin-bottom: 5px; position: relative; }
+        .scoring-info-block { font-size: 0.85rem; color: #7f8c8d; background: #f4f6f7; padding: 4px 15px; border-radius: 20px; font-weight: 600; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; border: 1px solid #BDC3C7; }
+        #mascot-container { width: 45px; height: 45px; margin-left: 10px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); animation: mascotFloat 3s ease-in-out infinite; }
+        @keyframes mascotFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+        .mascot-pop { animation: mascotPopAnim 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes mascotPopAnim { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
+        .feedback-message { display: inline-block; background-color: #FEF9E7; color: #E67E22; border: 1px solid #F5B041; padding: 4px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 2px 5px rgba(230, 126, 34, 0.1); }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* 1. ดาวปกติ (10 คะแนน) */
+        .floating-star { position: absolute; pointer-events: none; z-index: 3000; animation: floatStarBurst 1.2s ease-out forwards; filter: none !important; box-shadow: none !important; }
+        @keyframes floatStarBurst { 0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 0; } 20% { transform: translate(var(--tx, 0px), -20px) scale(1.2) rotate(20deg); opacity: 1; } 50% { transform: translate(var(--tx, 0px), -40px) scale(1) rotate(45deg); opacity: 1; } 100% { transform: translate(var(--tx, 0px), -80px) scale(0.5) rotate(90deg); opacity: 0; } }
+
+        /* 2. ดาวโบนัส 5 ดวง (จบข้อ) */
+        .bonus-star { position: fixed; z-index: 9999; width: 45px; height: 45px; pointer-events: none; animation: bonusPop 1.0s ease-out forwards; filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.6)); will-change: transform, opacity; }
+        @keyframes bonusPop { 0% { transform: translate(0,0) scale(0.3); opacity: 0; } 15% { opacity: 1; transform: translate(0,0) scale(1.4); } 100% { transform: translate(var(--tx), var(--ty)) scale(0.6) rotate(180deg); opacity: 0; } }
+
+        .right-controls { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .mini-hud { display: flex; align-items: center; gap: 8px; background: #F0F8FF; padding: 0 10px; border-radius: 15px; font-size: 0.85rem; font-weight: bold; color: #2E86C1; border: 1px solid #AED6F1; white-space: nowrap; height: 40px; box-sizing: border-box; }
+        .hud-item { display: flex; align-items: center; gap: 3px; }
+        .icon-btn { width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); padding: 0; will-change: transform; backface-visibility: hidden; transform: translateZ(0); }
+        .icon-btn:hover { transform: scale(1.1) translateZ(0); }
+        .btn-home-icon { background-color: #7F8C8D; } .btn-next-icon { background-color: #2E86C1; } .btn-next-icon svg { margin: 0; display: block; } .btn-table-icon { background-color: #f39c12; }
+        .timer-warning { color: #c0392b !important; font-weight: 800; animation: pulse-red 0.5s infinite alternate; }
+        @keyframes pulse-red { from { transform: scale(1); opacity: 1; text-shadow: 0 0 0 rgba(192, 57, 43, 0); } to { transform: scale(1.2); opacity: 1; text-shadow: 0 0 10px rgba(192, 57, 43, 0.5); } }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+        .fixed-problem-area { width: 100%; text-align: center; padding-bottom: 5px; flex-shrink: 0; }
+        .problem-statement { font-size: 2rem; font-weight: bold; color: #2E86C1; margin-bottom: 5px; background: transparent; border: 3px solid #D4E6F1; padding: 3px 25px 7px 25px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
+        .problem-box { display: inline-block; width: 1.1em; height: 1.1em; border: 0.1em solid #2E86C1; border-radius: 0.25em; background-color: transparent; box-sizing: border-box; position: relative; top: 0.05em; }
+        
+        .division-header { display: inline-grid; margin: 0; font-size: 24px; font-weight: 600; line-height: 1.5; justify-content: center; color: #000; background-color: transparent; z-index: 10; padding-bottom: 0; flex-shrink: 0; column-gap: 0; padding-right: calc(var(--scrollbar-width) + var(--grid-gap-right)); }
+        .division-body { display: inline-grid; margin: 0 auto; width: fit-content; font-size: 24px; font-weight: 600; line-height: 1.5; color: #000; column-gap: 0; }
+        
+        .cell { width: 48px; height: 50px; display: flex; align-items: center; justify-content: center; position: relative; box-sizing: border-box; }
+        .bracket-side { width: 30px !important; display: flex; align-items: flex-end; justify-content: flex-end; }
+        .bracket-top { border-top: 2px solid #000; width: 100%; }
+        .underline { border-bottom: 2px solid #000; width: 100%; }
+        .double-underline { border-bottom: 2px solid transparent; position: relative; margin-bottom: 6px; width: 100%; }
+        .double-underline::after { content: ''; position: absolute; left: 0; width: 100%; height: 3px; border-top: 2px solid #000; border-bottom: 2px solid #000; box-sizing: content-box; bottom: -7px; }
+        input.math-input, .answer-input { font-family: inherit; font-weight: 600; text-align: center; border: 2px solid #aaa; border-radius: 8px; outline: none; transition: all 0.2s; color: #000; background-color: #fff; padding: 0; }
+        input.math-input { width: 38px; height: 38px; font-size: 24px; z-index: 2; }
+        .answer-input { width: 80px; height: 38px; font-size: 24px; margin: 0 10px; }
+        input:focus { background-color: var(--focus-bg) !important; border-color: var(--primary-color) !important; box-shadow: none !important; transform: scale(1.05); }
+        input.correct { background-color: var(--correct-bg) !important; border-color: var(--correct-text) !important; color: var(--correct-text) !important; }
+        input.incorrect { background-color: var(--wrong-bg) !important; border-color: var(--wrong-text) !important; color: var(--wrong-text) !important; animation: shake 0.3s; }
+        input.partial { background-color: var(--partial-bg) !important; border-color: var(--partial-border) !important; }
+
+        #virtual-keypad { display: none; width: 100%; background: #fff; padding: 5px; box-sizing: border-box; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 100; flex-shrink: 0; border-top: 1px solid #ddd; }
+
+/* =========================================
+           แก้ไขเฉพาะส่วนมือถือ (Mobile Rules)
+           ========================================= */
+        @media (max-width: 800px) and (pointer: coarse) {
+            :root {
+                --primary-color: #2E86C1;
+                --secondary-color: #85C1E9;
+                --bg-color: #ffffff;
+                --correct-bg: #D5F5E3;
+                --correct-text: #196F3D;
+                --wrong-bg: #FADBD8;
+                --wrong-text: #943126;
+                --partial-bg: #F0F8FF;
+                --partial-border: #3498DB;
+                --focus-bg: #D6EAF8;
+                --scrollbar-width: 6px;
+                --grid-gap-right: 4px;
+            }
+
+            /* ซ้อน Media Query ย่อยข้างในได้ */
+            @media (pointer: coarse) { :root { --scrollbar-width: 0px; } }
+
+            html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; box-sizing: border-box; }
+            
+            body {
+                font-family: 'Sarabun', sans-serif;
+                background-color: #ffffff; /* บังคับพื้นหลังขาว */
+                background-image: none;    /* ลบลายจุดออก */
+                display: flex; align-items: center; justify-content: center;
+                color: #333; user-select: none;
+                overscroll-behavior: none;
+            }
+
+            /* ส่วน card เต็มจอ */
+            .card { 
+                height: 100% !important; 
+                width: 100% !important;
+                max-height: none; 
+                border-radius: 0; 
+                display: flex; 
+                flex-direction: column; 
+                border: none; 
+            }
+
+            #game-screen { display: flex; flex-direction: column; height: 100%; overflow: hidden; padding: 0.8rem 0.5rem; }
+            .game-content-wrapper { flex: 1; overflow-y: auto; width: 100%; }
+            
+            /* แสดงปุ่มกด */
+            #virtual-keypad { display: block; position: static; width: calc(100% + 1rem); margin-left: -0.5rem; margin-right: -0.5rem; margin-bottom: -0.8rem; margin-top: auto; border-radius: 0; padding: 10px 5px 20px 5px; background: #fff; border-top: 1px solid #ccc; z-index: 50; }
+        } 
+
+        .keypad-row { display: flex; justify-content: center; gap: 5px; margin-bottom: 5px; } .keypad-row:last-child { margin-bottom: 0; }
+        .key-btn { flex: 1; max-width: 60px; height: 45px; border-radius: 12px; border: 1px solid #ccc; background: white; font-size: 1.2rem; font-weight: 600; color: #333; box-shadow: 0 4px 0 #bbb; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.1s; }
+        .key-btn.next-btn { background-color: #D6EAF8; color: #2E86C1; border-color: #AED6F1; box-shadow: 0 4px 0 #85C1E9; } .key-btn.next-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #85C1E9; }
+        .key-btn.del-btn { background-color: #FADBD8; color: #c0392b; border-color: #F5B7B1; box-shadow: 0 4px 0 #E6B0AA; } .key-btn.del-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #E6B0AA; }
+        .toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255, 255, 255, 0.95); padding: 20px 40px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); font-size: clamp(1.5rem, 5vw, 2.5rem); font-weight: 800; color: #2E86C1; border: 3px solid #AED6F1; z-index: 2000; opacity: 0; transition: all 0.3s ease; pointer-events: none; text-align: center; white-space: nowrap; } .toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+	/* --- ค้นหา .scroll-arrow แล้วแทนที่ด้วยโค้ดนี้ --- */
+.scroll-arrow { 
+    position: absolute; 
+    bottom: 15px;      /* ของเดิม 212 ใช้ 15px */
+    left: 15px; 
+    width: 34px;       /* ของเดิม 212 ใช้ 34px */
+    height: 34px;      /* ของเดิม 212 ใช้ 34px */
+    box-sizing: border-box; 
+    background-color: white; 
+    border: 2px solid #E67E22; /* เส้นขอบ 2px */
+    border-radius: 50%; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    z-index: 500; 
+    pointer-events: auto; 
+    cursor: pointer; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+    opacity: 0; 
+    transition: all 0.3s ease; 
+}
+
+	/* เพิ่มคลาสนี้ (ของเดิมไม่มี) เพื่อให้ปุ่มปรากฏ */
+	.scroll-arrow.visible { 
+    	opacity: 1; 
+    	visibility: visible;
+	}
+
+	.scroll-arrow:hover { transform: scale(1.1); } 
+	.scroll-arrow:active { transform: scale(0.95); } 
+
+	.scroll-arrow.is-up { transform: rotate(180deg); } 
+	.scroll-arrow.is-up:hover { transform: rotate(180deg) scale(1.1); } 
+
+	.scroll-arrow svg { width: 20px; height: 20px; fill: #E67E22; display: block; }
+
+	/* บังคับให้แสดงบนมือถือ และซ่อนบนจอใหญ่ */
+	@media (min-width: 801px) { .scroll-arrow { display: none !important; } }
+
+	/* ปรับพื้นที่ Grid ให้มีที่ว่างด้านล่างสำหรับปุ่มลูกศร */
+	.grid-scroll-wrapper {
+    	padding-bottom: 20px !important; /* เว้นที่ด้านล่างเยอะหน่อยกันปุ่มบังเลข */
+	}
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: grid; place-items: center; overflow-y: auto; z-index: 1000; }
+        .result-box { background: white; padding: 25px; border-radius: 20px; text-align: center; width: calc(100% - 40px); max-width: 340px; box-shadow: 0 15px 40px rgba(0,0,0,0.25); border: 4px solid #D6EAF8; position: relative; margin: 20px auto; box-sizing: border-box; }
+        #help-modal .result-box { width: calc(100% - 40px); max-width: 380px; max-height: 95dvh; overflow-y: auto; text-align: left; padding: 45px 20px 20px 20px; }
+        .help-mode-row { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; font-size: 0.85rem; } .help-mode-badge { flex-shrink: 0; min-width: 50px; text-align: center; font-size: 0.8rem; padding: 2px 8px; margin-right: 6px; } .help-input-example { display: inline-block; width: 20px; height: 20px; border: 2px solid #aaa; border-radius: 6px; vertical-align: middle; margin-right: 6px; background: white; }
+        .help-key-btn { display: inline-flex; align-items: center; justify-content: center; min-width: 34px; height: 30px; padding: 0 4px; border-radius: 8px; border: 1px solid #ccc; background: white; font-size: 1rem; font-weight: 700; color: #333; box-shadow: 0 3px 0 #bbb; vertical-align: middle; margin: 0 3px; position: relative; top: -2px; } .help-key-next { background-color: #D6EAF8; color: #2E86C1; border-color: #AED6F1; box-shadow: 0 3px 0 #85C1E9; } .help-key-del { background-color: #FADBD8; color: #c0392b; border-color: #F5B7B1; box-shadow: 0 3px 0 #E6B0AA; }
+        .score-big { font-size: 3.5rem; color: #2E86C1; font-weight: 800; margin: 10px 0; }
+        .modal-btn { padding: 10px 20px; border-radius: 50px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; color: white; min-width: 100px; box-shadow: 0 3px 5px rgba(0,0,0,0.1); } .modal-btn:hover { transform: translateY(-2px); } .btn-modal-cancel { background-color: #95a5a6; } .btn-modal-confirm { background: linear-gradient(135deg, #e74c3c, #c0392b); } .btn-modal-report { background: linear-gradient(135deg, #3498DB, #2980B9); margin-bottom: 10px; width: 100%; }
+        .svg-icon { width: 24px; height: 24px; fill: currentColor; }
+        #table-modal .result-box { max-height: 80vh; width: 320px; padding: 0; display: flex; flex-direction: column; overflow: hidden; text-align: left; }
+        .btn-close-modal { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; background-color: #e74c3c; color: white; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-weight: bold; font-size: 1.2rem; transition: transform 0.2s; z-index: 20; padding: 0; } .btn-close-modal:hover { transform: scale(1.1); background-color: #c0392b; }
+        #table-content { display: flex; flex-direction: column; overflow: hidden; flex: 1; }
+        .multiplication-title { text-align: center; font-size: 1.5rem; font-weight: bold; color: #2E86C1; padding-top: 40px; padding-bottom: 10px; border-bottom: 2px solid #D6EAF8; margin: 0; background: white; flex-shrink: 0; }
+        .multi-scroll-area { overflow-y: auto; padding: 10px 20px 20px 20px; flex-grow: 1; }
+        .multi-row { font-size: 1.3rem; color: #333; padding: 6px 0; border-bottom: 1px dashed #eee; display: flex; justify-content: center; font-variant-numeric: tabular-nums; } .multi-row:last-child { border-bottom: none; }
+        #report-setup-modal .result-box { padding-top: 15px; padding-bottom: 20px; } #report-setup-modal h2 { margin-top: 0; margin-bottom: 15px; color: #2E86C1; }
+        .input-group { margin-bottom: 8px; text-align: left; } .input-group label { display: block; margin-bottom: 4px; color: #2E86C1; font-weight: bold; } .input-group input { width: 100%; padding: 6px 10px; border: 2px solid #AED6F1; border-radius: 8px; font-family: inherit; font-size: 1rem; line-height: 1.6; box-sizing: border-box; } .input-group input:focus { border-color: #2E86C1; outline: none; }
+        #report-card-container { background-color: #ffffff; border: 4px solid #F1C40F; border-radius: 15px; padding: 10px 15px; position: relative; text-align: center; color: #333; }
+        .report-header { font-family: 'Chakra Petch', sans-serif; font-size: 1.5rem; color: #2E86C1; font-weight: bold; margin-bottom: 5px; border-bottom: 2px solid #F1C40F; padding-bottom: 5px; text-align: center; }
+        .report-row { display: flex; justify-content: flex-start; align-items: baseline; margin-bottom: 4px; font-size: 1rem; border-bottom: 1px dashed #e0e0e0; padding-bottom: 4px; padding-left: 10px; }
+        .report-label { font-weight: bold; color: #7F8C8D; width: 55px; flex-shrink: 0; text-align: left; }
+        .report-value { font-weight: bold; color: #2C3E50; text-align: left; flex-grow: 1; white-space: normal; word-break: break-word; line-height: 1.3; }
+        .report-grade-box { background: #2E86C1; color: white; border-radius: 10px; padding: 5px; margin: 8px 0; } .report-grade-title { font-size: 0.9rem; opacity: 0.9; } .report-grade-val { font-size: 2.2rem; font-weight: 800; line-height: 1; margin: 5px 0; font-family: 'Chakra Petch', sans-serif; text-shadow: 2px 2px 0 rgba(0,0,0,0.2); }
+        .report-footer { font-size: 0.75rem; color: #95a5a6; margin-top: 8px; border-top: 1px solid #eee; padding-top: 8px; text-align: center; line-height: 1.4; }
+        .btn-action-group { display: flex; gap: 10px; justify-content: center; margin-top: 15px; width: 100%; }
+        .btn-long { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 12px; border-radius: 50px; font-size: 0.9rem; font-weight: bold; cursor: pointer; transition: all 0.2s; white-space: nowrap; height: 44px; box-shadow: 0 3px 5px rgba(0,0,0,0.1); } .btn-long:hover { transform: translateY(-2px); box-shadow: 0 5px 8px rgba(0,0,0,0.15); } .btn-long:active { transform: translateY(0); }
+        .btn-secondary { background: white; color: #2E86C1; border: 2px solid #AED6F1; } .btn-secondary svg { fill: #2E86C1; width: 20px; height: 20px; }
+        .btn-primary { background: #27AE60; color: white; border: none; } .btn-primary svg { fill: white; width: 20px; height: 20px; }
+        #report-card-modal .result-box { width: calc(100% - 40px); max-width: 380px; max-height: 95dvh; overflow-y: auto; padding-top: 45px; }
+        #success-modal, #saved-modal, #save-error-modal { z-index: 3000; } #success-modal .result-box { border-color: #27AE60; background-color: #F9FFF9; }
+        #error-modal { z-index: 2000; } .error-box-anim { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        .help-header-wrapper { display: flex; align-items: center; justify-content: flex-start; color: #2E86C1; margin-bottom: 15px; border-bottom: none; }
+        .help-header-icon { width: 28px; height: 28px; fill: #2E86C1; vertical-align: bottom; margin-right: 8px; }
+        .help-content h3 { color: #2E86C1; margin: 3px 0 2px 0; font-size: 1rem; border-bottom: 2px solid #D6EAF8; padding-bottom: 1px; display: inline-block; }
+        .help-content p { font-size: 0.85rem; color: #555; margin: 2px 0; line-height: 1.3; }
+        .help-grade-row { display: grid; grid-template-columns: 1fr 1fr; column-gap: 15px; row-gap: 6px; background: transparent; border: none; padding: 8px 5px; margin-top: 5px; font-size: 0.85rem; } @media (min-width: 400px) { .help-grade-row { justify-items: center; } }
+        .help-grade-item { display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 6px; line-height: 1.2; font-weight: bold; color: #555; white-space: nowrap; width: 100%; font-size: 0.85rem; } .help-grade-val { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 0; min-width: 45px; text-align: right; }
+        .btn-back-modal { position: absolute; top: 10px; left: 10px; width: 32px; height: 32px; background-color: #BDC3C7; color: white; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-weight: bold; font-size: 1.2rem; transition: transform 0.2s; z-index: 20; padding: 0; } .btn-back-modal:hover { transform: scale(1.1); background-color: #95a5a6; }
+        
+        /* 🛠️ แก้ไขปุ่ม <- ในหน้าเลือกโหมด: ซ่อนเฉพาะใน modal นี้ */
+        #mode-selector-modal .btn-back-modal { display: none !important; }
+
+        @media (max-width: 700px) {
+            .card { padding: 0.8rem; border-radius: 0; border: none; }
+            h1 { font-size: 1.4rem; }
+            .logo-title-wrapper { margin-bottom: 2px; } .mini-logo-svg { width: 36px; height: 36px; }
+            .menu-logo-area { padding-top: 25px; margin-bottom: 5px; }
+            .btn-group { width: 100%; gap: 8px; }
+            .mode-btn { font-size: 0.75rem; padding: 4px 10px; } 
+            .cell { width: 32px; height: 45px; } .bracket-side { width: 18px !important; }
+            .division-header, .division-body { font-size: 20px; }
+            input.math-input { width: 26px; height: 32px; font-size: 20px; }
+            .game-header-badge { font-size: 0.85rem; padding: 4px 12px 4px 4px; }
+            .header-tag { font-size: 0.8rem; padding: 0 10px; height: 24px; }
+            .header-mission { font-size: 0.85rem; }
+            .icon-btn { width: 34px; height: 34px; }
+            .scoring-info-block { font-size: 0.75rem; padding: 2px 8px; }
+            #game-screen { padding: 0.8rem 0.5rem; }
+            
+            .method-label-container { height: 45px; margin-top: 0; padding-top: 0 !important; } 
+            .method-label { font-size: 18px; }
+            .calculation-area { gap: 8px; } 
+            .double-underline::after { bottom: -6.5px; }
+            .problem-box { width: 0.9em; }
+            
+            .answer-section { font-size: 1.1rem; gap: 5px; margin-top: 15px; padding-bottom: 40px; } 
+            .answer-input { width: 60px; height: 32px; font-size: 20px; }
+            
+            #help-modal .result-box { padding: 40px 12px 15px 12px; width: calc(100% - 40px); }
+            #help-modal h2 { margin: 0; font-size: 1.3rem; }
+            .help-header-icon { width: 24px; height: 24px; }
+            .help-content h3 { margin: 3px 0 2px 0; font-size: 0.85rem; border-bottom-width: 1px;}
+            .help-mode-row { margin-bottom: 2px; gap: 4px; font-size: 0.75rem; }
+            .help-mode-badge { padding: 2px 6px; min-width: 50px; font-size: 0.75rem; height: 22px; line-height: 20px; margin-right: 4px; }
+            .help-input-example { width: 16px; height: 16px; border-radius: 3px; margin-right: 4px; vertical-align: text-bottom; }
+            .help-key-btn { height: 24px; min-width: 28px; font-size: 0.8rem; padding: 0 4px; border-radius: 6px; box-shadow: 0 2px 0; top:-1px; }
+            .help-key-next { box-shadow: 0 2px 0 #85C1E9; } .help-key-del { box-shadow: 0 2px 0 #E6B0AA; }
+            .help-content p { font-size: 0.75rem; margin: 2px 0; line-height: 1.3; }
+            #help-modal .help-content div[style*="display: flex"] { margin-top: 5px !important; gap: 5px !important; flex-direction: row; }
+            .help-grade-row { padding: 5px 0; margin-top: 8px; column-gap: 5px; row-gap: 6px; grid-template-columns: 1fr 1fr; justify-items: center; }
+            .help-grade-val { font-size: 1rem; min-width: 40px; }
+            .help-grade-item { font-size: 0.75rem; gap: 4px; justify-content: flex-start; }
+            .help-grade-row > div:nth-child(odd) { justify-self: end; }
+            .help-grade-row > div:nth-child(even) { justify-self: start; padding-left: 5px; }
+            .grid-scroll-wrapper { padding-bottom: 20px !important; }
+        }
+    </style>
+
+</head>
+<body>
+    <div class="card">
+        <div id="splash-screen">
+            <div class="splash-logo-container">
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 95C50 95 10 75 10 30V15L50 5L90 15V30C90 75 50 95 50 95Z" fill="#F39C12"/>
+                    <path d="M50 90C50 90 15 72 15 32V18L50 9L85 18V32C85 72 50 90 50 90Z" fill="#F1C40F" fill-opacity="0.6"/>
+                    <circle cx="50" cy="35" r="4" fill="white"/>
+                    <rect x="30" y="48" width="40" height="6" rx="3" fill="white"/>
+                    <circle cx="50" cy="67" r="4" fill="white"/>
+                </svg>
+            </div>
+            <div class="splash-title">ผู้พิชิตการหารยาว</div>
+            <div class="splash-loader"></div>
+        </div>
+
+        <div id="menu-screen">
+            <button class="btn-help-top" onclick="openHelpModal()" title="วิธีเล่น">
+                <svg viewBox="0 0 24 24"><path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.41.21.75-.19.75-.64V6c-.55-.2-1.12-.2-1.5-.5zM21 18.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/></svg>
+            </button>
+            
+            <div class="screen-header menu-logo-area">
+                <div class="logo-title-wrapper">
+                     <svg class="mini-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M50 95C50 95 10 75 10 30V15L50 5L90 15V30C90 75 50 95 50 95Z" fill="#F39C12"/>
+                        <path d="M50 90C50 90 15 72 15 32V18L50 9L85 18V32C85 72 50 90 50 90Z" fill="#F1C40F" fill-opacity="0.6"/>
+                        <circle cx="50" cy="35" r="4" fill="white"/>
+                        <rect x="30" y="48" width="40" height="6" rx="3" fill="white"/>
+                        <circle cx="50" cy="67" r="4" fill="white"/>
+                    </svg>
+                    <h1>ผู้พิชิตการหารยาว</h1>
+                </div>
+                <div class="subject-header">กลุ่มสาระการเรียนรู้คณิตศาสตร์</div>
+                <div class="grade-header">ชั้นประถมศึกษาปีที่ 3</div>
+            </div>
+            
+            <div class="scroll-area">
+                <div class="star-map-container">
+                    
+                    <div class="map-row lvl-1" onclick="openModeSelector(1, '2 หลัก / ผลหาร 1 หลัก (ลงตัว)')">
+                        <div class="star-node">1</div>
+                        <div class="mission-label">
+                            <span class="mission-sub">ตัวตั้ง 2 หลัก ตัวหาร 1 หลัก</span>
+                            <span class="mission-main">ผลหาร 1 หลัก (ลงตัว)</span>
+                        </div>
+                    </div>
+
+                    <div class="map-row lvl-1" onclick="openModeSelector(2, '2 หลัก / ผลหาร 2 หลัก (ลงตัว)')">
+                        <div class="star-node">2</div>
+                        <div class="mission-label">
+                            <span class="mission-sub">ตัวตั้ง 2 หลัก ตัวหาร 1 หลัก</span>
+                            <span class="mission-main">ผลหาร 2 หลัก (ลงตัว)</span>
+                        </div>
+                    </div>
+
+                    <div class="map-row lvl-1" onclick="openModeSelector(3, '2 หลัก / ผลหาร 1 หลัก (มีเศษ)')">
+                        <div class="star-node">3</div>
+                        <div class="mission-label">
+                            <span class="mission-sub">ตัวตั้ง 2 หลัก ตัวหาร 1 หลัก</span>
+                            <span class="mission-main">ผลหาร 1 หลัก (มีเศษ)</span>
+                        </div>
+                    </div>
+
+                    <div class="map-row lvl-1" onclick="openModeSelector(4, '2 หลัก / ผลหาร 2 หลัก (มีเศษ)')">
+                        <div class="star-node">4</div>
+                        <div class="mission-label">
+                            <span class="mission-sub">ตัวตั้ง 2 หลัก ตัวหาร 1 หลัก</span>
+                            <span class="mission-main">ผลหาร 2 หลัก (มีเศษ)</span>
+                        </div>
+                    </div>
+
+                    <div class="map-row lvl-2" onclick="openModeSelector(5, '3 หลัก (ลงตัว)')">
+                        <div class="star-node">5</div>
+                        <div class="mission-label">
+                            <span class="mission-sub">ตัวตั้ง 3 หลัก ตัวหาร 1 หลัก</span>
+                            <span class="mission-main">(ลงตัว)</span>
+                        </div>
+                    </div>
+
+                    <div class="map-row lvl-2" onclick="openModeSelector(6, '3 หลัก (มีเศษ)')">
+                        <div class="star-node">6</div>
+                        <div class="mission-label">
+                            <span class="mission-sub">ตัวตั้ง 3 หลัก ตัวหาร 1 หลัก</span>
+                            <span class="mission-main">(มีเศษ)</span>
+                        </div>
+                    </div>
+
+                    <div class="map-row lvl-3" onclick="openModeSelector(7, '4 หลัก (ลงตัว)')">
+                        <div class="star-node">7</div>
+                        <div class="mission-label">
+                            <span class="mission-sub">ตัวตั้ง 4 หลัก ตัวหาร 1 หลัก</span>
+                            <span class="mission-main">(ลงตัว)</span>
+                        </div>
+                    </div>
+
+                    <div class="map-row lvl-3" onclick="openModeSelector(8, '4 หลัก (มีเศษ)')">
+                        <div class="star-node">8</div>
+                        <div class="mission-label">
+                            <span class="mission-sub">ตัวตั้ง 4 หลัก ตัวหาร 1 หลัก</span>
+                            <span class="mission-main">(มีเศษ)</span>
+                        </div>
+                    </div>
+
+                    <div class="map-row lvl-mix" onclick="openModeSelector(9, 'สุ่มทุกรูปแบบ')">
+                        <div class="star-node"></div> <div class="mission-label">
+                            <span class="mission-sub">สุ่มทุกรูปแบบ</span>
+                            <span class="mission-main">รวมมิตร (สุ่ม)</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="screen-footer">
+                <div class="credit-footer">
+                    ผู้จัดทำ: <span class="credit-name">นายยงยศ ศิริสัมพันธ์</span><br>
+                    ตำแหน่ง ครู วิทยฐานะ ครูชำนาญการพิเศษ<br>
+                    โรงเรียนวัดสันติธรรม
+                </div>
+            </div>
+        </div>
+
+        <div id="game-screen" class="hidden">
+            <div class="screen-header">
+                <div class="top-nav-bar">
+                    <div id="mode-display-wrapper"></div>
+                    <div class="right-controls">
+                        <div id="comp-hud" class="mini-hud hidden">
+                            <div class="hud-item"><span>⏳</span><span id="timer-val">03:00</span></div>
+                            <div class="hud-item" style="margin-left:5px; padding-left:5px; border-left:1px solid #AED6F1;"><span>⭐</span><span id="score-val">0</span></div>
+                        </div>
+                        <button id="btn-table" class="icon-btn btn-table-icon hidden" onclick="showTable()" title="สูตรคูณ">
+                            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
+                        </button>
+                        <button class="icon-btn btn-home-icon" onclick="goHome()" title="กลับเมนูหลัก">
+                            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                        </button>
+                        <button id="btn-next-top" class="icon-btn btn-next-icon" onclick="checkAndGenerate()" title="ข้อถัดไป">
+                            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="fixed-problem-area" class="fixed-problem-area"></div>
+            
+            <div id="scoring-info-area">
+                <div id="mascot-container"></div>
+            </div>
+
+            <div class="game-content-wrapper">
+                <div class="calculation-area">
+                    <div class="method-label-container"><div class="method-label">วิธีทำ</div></div>
+                    <div id="game-content-area" class="grid-stack-container"></div>
+                </div>
+                <div id="bottom-answer-area"></div> 
+            </div>
+
+            <div id="virtual-keypad">
+                <div class="keypad-row">
+                    <button class="key-btn" onclick="keypadPress(1)">1</button>
+                    <button class="key-btn" onclick="keypadPress(2)">2</button>
+                    <button class="key-btn" onclick="keypadPress(3)">3</button>
+                    <button class="key-btn" onclick="keypadPress(4)">4</button>
+                    <button class="key-btn" onclick="keypadPress(5)">5</button>
+                    <button class="key-btn del-btn" onclick="keypadDel()">⌫</button>
+                </div>
+                <div class="keypad-row">
+                    <button class="key-btn" onclick="keypadPress(6)">6</button>
+                    <button class="key-btn" onclick="keypadPress(7)">7</button>
+                    <button class="key-btn" onclick="keypadPress(8)">8</button>
+                    <button class="key-btn" onclick="keypadPress(9)">9</button>
+                    <button class="key-btn" onclick="keypadPress(0)">0</button>
+                    <button class="key-btn next-btn" onclick="keypadNext()" title="ถัดไป">▶</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-modal" class="modal-overlay hidden"><div class="result-box"><div style="font-size:60px">⏰</div><h2 style="color:#E74C3C">หมดเวลา!</h2><div id="final-score" class="score-big">0</div><p id="feedback-text" style="color:#2E86C1; font-weight:bold">เก่งมาก!</p><button class="modal-btn btn-modal-report" onclick="openReportSetup()">📜 ทำใบสรุปผล</button><button class="modal-btn btn-modal-confirm" style="margin:5px auto; width:100%;" onclick="closeModal()">เล่นอีกครั้ง</button></div></div>
+    <div id="quit-modal" class="modal-overlay hidden"><div class="result-box"><h2 style="color:#E74C3C; margin-bottom:20px;">ออกจากเกม?</h2><div style="display:flex; gap:15px; justify-content:center;"><button class="modal-btn btn-modal-cancel" onclick="closeQuitModal()">ยกเลิก</button><button class="modal-btn btn-modal-confirm" onclick="confirmQuit()">ออกเลย</button></div></div></div>
+    <div id="table-modal" class="modal-overlay hidden"><div class="result-box"><button class="btn-close-modal" onclick="closeTableModal()"><svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: white; display: block;"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button><div id="table-content"></div></div></div>
+    <div id="toast-message" class="toast hidden"></div>
+    <div id="skip-modal" class="modal-overlay hidden"><div class="result-box"><h2 style="color:#E74C3C; margin-bottom:10px;">ข้ามข้อนี้?</h2><p style="color:#7F8C8D; margin-bottom:20px;">ยังทำไม่เสร็จเลย ต้องการเปลี่ยนโจทย์ไหม?</p><div style="display:flex; gap:15px; justify-content:center;"><button class="modal-btn btn-modal-cancel" onclick="closeSkipModal()">ทำต่อ</button><button class="modal-btn btn-modal-confirm" onclick="confirmSkip()">เปลี่ยนโจทย์</button></div></div></div>
+    <div id="success-modal" class="modal-overlay hidden"><div class="result-box" style="width: 280px; padding: 40px 20px;"><h2 style="color:#27AE60; margin:0 0 10px 0; font-size:1.8rem;">ส่งเรียบร้อย!</h2><p style="color:#555; font-size:1rem; margin-bottom:20px;">ส่งคะแนนถึงคุณครูแล้ว</p><button class="modal-btn" style="background:#27AE60; width:100%;" onclick="closeSuccessModal()">ตกลง</button></div></div>
+    <div id="saved-modal" class="modal-overlay hidden"><div class="result-box" style="width: 280px; padding: 40px 20px;"><h2 style="color:#27AE60; margin:0 0 10px 0; font-size:1.8rem;">บันทึกสำเร็จ!</h2><p style="color:#555; font-size:1rem; margin-bottom:20px;">บันทึกรูปภาพลงเครื่องแล้ว</p><button class="modal-btn" style="background:#27AE60; width:100%;" onclick="closeSavedModal()">ตกลง</button></div></div>
+    <div id="save-error-modal" class="modal-overlay hidden"><div class="result-box error-box-anim" style="width: 280px; padding: 40px 20px; border-color: #E74C3C; background-color: #FDEDEC;"><h2 style="color:#E74C3C; margin:0 0 10px 0; font-size:1.8rem;">บันทึกไม่ได้!</h2><p id="save-error-msg" style="color:#555; font-size:1rem; margin-bottom:20px;">ตรวจสอบเน็ต แล้วกดใหม่อีกทีนะ</p><button class="modal-btn" style="background:#E74C3C; width:100%;" onclick="closeSaveErrorModal()">ตกลง</button></div></div>
+    <div id="error-modal" class="modal-overlay hidden"><div class="result-box error-box-anim" style="width: 280px; padding: 40px 20px; border-color: #E74C3C; background-color: #FDEDEC;"><h2 style="color:#E74C3C; margin:0 0 10px 0; font-size:1.8rem;">ส่งไม่ได้!</h2><p id="error-modal-msg" style="color:#555; font-size:1rem; margin-bottom:20px;">ตรวจสอบเน็ต แล้วกดใหม่อีกทีนะ</p><button class="modal-btn" style="background:#E74C3C; width:100%;" onclick="closeErrorModal()">ตกลง</button></div></div>
+    <div id="help-modal" class="modal-overlay hidden"><div class="result-box"><button class="btn-close-modal" onclick="closeHelpModal()"><svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: white; display: block;"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button><div class="help-header-wrapper"><svg class="help-header-icon" viewBox="0 0 24 24"><path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.41.21.75-.19.75-.64V6c-.55-.2-1.12-.2-1.5-.5zM21 18.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/></svg><h2 style="margin:0; font-size:1.3rem; color:#2E86C1;">วิธีเล่น</h2></div><div class="help-content">
+<h3>1. เลือกภารกิจ</h3>
+            <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 5px;">
+                <div class="help-mode-row">
+                    <span class="help-mode-badge" style="background-color: #2980B9; color: white; padding: 4px 10px; border-radius: 8px; font-weight: bold; min-width: 60px; text-align: center;">ฝึกฝน</span> 
+                    <span>มีตัวช่วย ไม่จับเวลา</span>
+                </div>
+                <div class="help-mode-row">
+                    <span class="help-mode-badge" style="background-color: #1E8449; color: white; padding: 4px 10px; border-radius: 8px; font-weight: bold; min-width: 60px; text-align: center;">ท้าทาย</span> 
+                    <span>ปิดตัวช่วย ไม่จับเวลา</span>
+                </div>
+                <div class="help-mode-row">
+                    <span class="help-mode-badge" style="background: linear-gradient(45deg, #9B59B6, #8E44AD); color: white; padding: 4px 10px; border-radius: 8px; font-weight: bold; min-width: 60px; text-align: center;">ประลอง</span> 
+                    <span>จับเวลา (ง่าย) มีคะแนน</span>
+                </div>
+                <div class="help-mode-row">
+                    <span class="help-mode-badge" style="background: linear-gradient(45deg, #E74C3C, #C0392B); color: white; padding: 4px 10px; border-radius: 8px; font-weight: bold; min-width: 60px; text-align: center;">พิชิต</span> 
+                    <span>จับเวลา (ยาก) มีคะแนน</span>
+                </div>
+            </div>
+<h3>2. วิธีเติมคำตอบ</h3><div style="display: flex; flex-direction: column; gap: 4px; margin-top: 5px;"><div class="help-mode-row"><span class="help-input-example" style="background-color: #D6EAF8; border-color: #2E86C1;"></span> <span><b>ช่องสีฟ้า:</b> ช่องที่ต้องเติม</span></div><div class="help-mode-row"><span class="help-input-example" style="background-color: #D5F5E3; border-color: #196F3D;"></span> <span><b>ช่องสีเขียว:</b> ถูกต้อง</span></div><div class="help-mode-row"><span class="help-input-example" style="background-color: #FADBD8; border-color: #943126;"></span> <span><b>ช่องสีแดง:</b> ผิด (ลองใหม่)</span></div></div><div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; text-align: center; line-height: 1.6;"><div style="white-space: nowrap;">กด <span class="help-key-btn help-key-next">▶</span> ไปช่องถัดไป</div><div style="white-space: nowrap;">กด <span class="help-key-btn help-key-del">⌫</span> เพื่อลบ</div></div><h3>3. เกณฑ์ระดับ (ประลอง / พิชิต)</h3><div class="help-grade-row"><div class="help-grade-item"><span class="help-grade-val" style="color:#2E86C1">350+</span><span>ยอดเยี่ยม</span></div><div class="help-grade-item"><span class="help-grade-val" style="color:#1E8449">250+</span><span>ดีมาก</span></div><div class="help-grade-item"><span class="help-grade-val" style="color:#F1C40F">150+</span><span>ดี</span></div><div class="help-grade-item"><span class="help-grade-val" style="color:#95A5A6">&lt; 150</span><span>พยายามอีกนิด</span></div></div></div></div></div>
+
+<div id="mode-selector-modal" class="modal-overlay hidden">
+        <div class="result-box" style="max-width: 360px; padding: 30px 20px;">
+            
+            <button class="btn-close-modal" onclick="closeModeSelector()" title="ปิด">
+                <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: white; display: block;"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+            
+            <h3 style="color:#7F8C8D; margin:0 0 5px 0; font-size:0.9rem;">ภารกิจที่เลือก:</h3>
+            <h2 id="mode-selector-title" style="color:#2E86C1; margin:0 0 25px 0; font-size:1.4rem; border-bottom:3px solid #D6EAF8; padding-bottom:12px; line-height:1.3;">-</h2>
+            
+            <div class="mode-select-grid">
+                
+                <button class="mode-select-btn" style="background-color:#2980B9;" onclick="selectMode('normal')">
+                    <span class="mode-icon">
+                        <svg viewBox="0 0 100 100">
+                            <path d="M50 85 Q50 95 40 95 H60 Q50 95 50 85 V55" stroke="#8D6E63" stroke-width="6" fill="none" stroke-linecap="round"/>
+                            <path d="M50 55 Q30 15 10 45 Q30 75 50 55" fill="#4CD964" stroke="#2E7D32" stroke-width="2"/>
+                            <path d="M50 55 Q70 15 90 45 Q70 75 50 55" fill="#4CD964" stroke="#2E7D32" stroke-width="2"/>
+                        </svg>
+                    </span>
+                    <span>ฝึกฝน</span>
+                    <span style="font-size:0.75rem; font-weight:normal; opacity:0.9;">มีตัวช่วย</span>
+                </button>
+
+                <button class="mode-select-btn" style="background-color:#1E8449;" onclick="selectMode('hard')">
+                    <span class="mode-icon">
+                        <svg viewBox="0 0 100 100">
+                            <path d="M50 95 C20 95 10 70 10 55 C10 25 50 5 50 5 C50 5 90 25 90 55 C90 70 80 95 50 95" fill="#FF5722" stroke="#BF360C" stroke-width="2"/>
+                            <path d="M50 85 C35 85 25 70 25 60 C25 40 50 25 50 25 C50 25 75 40 75 60 C75 70 65 85 50 85" fill="#FFC107"/>
+                        </svg>
+                    </span>
+                    <span>ท้าทาย</span>
+                    <span style="font-size:0.75rem; font-weight:normal; opacity:0.9;">ปิดตัวช่วย</span>
+                </button>
+
+                <button class="mode-select-btn" style="background: linear-gradient(45deg, #9B59B6, #8E44AD);" onclick="selectMode('compete')">
+                    <span class="mode-icon">
+                        <svg viewBox="0 0 100 100">
+                            <g transform="rotate(45 50 50)">
+                                <rect x="45" y="10" width="10" height="60" fill="#CFD8DC" stroke="#546E7A" stroke-width="2"/>
+                                <rect x="42" y="70" width="16" height="5" fill="#FFC107" stroke="#F57F17" stroke-width="2"/> <rect x="46" y="75" width="8" height="15" fill="#795548" stroke="#3E2723" stroke-width="2"/> <circle cx="50" cy="92" r="4" fill="#FFC107" stroke="#F57F17" stroke-width="2"/> </g>
+                            <g transform="rotate(-45 50 50)">
+                                <rect x="45" y="10" width="10" height="60" fill="#CFD8DC" stroke="#546E7A" stroke-width="2"/>
+                                <rect x="42" y="70" width="16" height="5" fill="#FFC107" stroke="#F57F17" stroke-width="2"/>
+                                <rect x="46" y="75" width="8" height="15" fill="#795548" stroke="#3E2723" stroke-width="2"/>
+                                <circle cx="50" cy="92" r="4" fill="#FFC107" stroke="#F57F17" stroke-width="2"/>
+                            </g>
+                        </svg>
+                    </span>
+                    <span>ประลอง</span>
+                    <span style="font-size:0.75rem; font-weight:normal; opacity:0.9;">จับเวลา (ง่าย)</span>
+                </button>
+
+                <button class="mode-select-btn" style="background: linear-gradient(45deg, #E74C3C, #C0392B);" onclick="selectMode('master')">
+                    <span class="mode-icon">
+                        <svg viewBox="30 5 40 25">
+                            <path d="M35 25L32 12L42 18L50 8L58 18L68 12L65 25H35Z" fill="#FFD700" stroke="#F1C40F" stroke-width="1.5" stroke-linejoin="round"/>
+                            <circle cx="50" cy="18" r="3" fill="#E74C3C"/>
+                        </svg>
+                    </span>
+                    <span>พิชิต</span>
+                    <span style="font-size:0.75rem; font-weight:normal; opacity:0.9;">จับเวลา (ยาก)</span>
+                </button>
+                
+            </div>
+        </div>
+    </div>
+
+<div id="report-setup-modal" class="modal-overlay hidden">
+    <div class="result-box">
+        <h2 style="color:#2E86C1; margin-bottom:10px;">ข้อมูลผู้พิชิต</h2>
+        
+        <div class="input-group">
+            <label>ชื่อ-นามสกุล:</label>
+            <input type="text" id="player-name" placeholder="เช่น ด.ช.รักเรียน เพียรศึกษา" 
+                   autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        </div>
+
+        <div class="input-group">
+            <label>ชั้น/ห้อง:</label>
+            <input type="text" id="player-class" placeholder="เช่น ป.3/1" 
+                   autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        </div>
+
+        <div class="input-group">
+            <label>เลขที่:</label>
+            <input type="number" id="player-no" placeholder="เลขที่" 
+                   autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        </div>
+
+        <div style="display:flex; gap:15px; justify-content:center; margin-top:20px;">
+            <button class="modal-btn btn-modal-cancel" onclick="closeReportSetup()">ยกเลิก</button>
+            <button class="modal-btn btn-modal-confirm" onclick="generateReport()">สร้างใบสรุป</button>
+        </div>
+    </div>
+</div>
+    <div id="report-card-modal" class="modal-overlay hidden"><div class="result-box"><button class="btn-back-modal" onclick="editReportInfo()" title="แก้ไขข้อมูล"><svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: white; display: block;"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button><button class="btn-close-modal" onclick="closeReportCard()"><svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: white; display: block;"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button><div id="report-card-container"></div><div class="btn-action-group"><button class="btn-long btn-secondary" onclick="saveReportImage()" title="บันทึกรูป"><svg viewBox="0 0 24 24"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm6 15H9v-2h6v2zm0-4H9V9h6v4z"/></svg>บันทึกรูป</button><button id="btn-submit-score-report" class="btn-long btn-primary" style="display:none;" onclick="submitScoreToSheet()" title="ส่งคะแนนครู"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>ส่งคะแนนครู</button></div></div></div>
+
+<script>
+    // 1. ตัวแปรสำหรับ "จำ" ว่าผู้เล่นกดเลือกโจทย์ข้อไหนมา
+    let selectedProblemMode = 1; 
+
+    // 2. ฟังก์ชันเปิดหน้าต่างเลือกโหมด
+    function openModeSelector(modeIndex, title) {
+        selectedProblemMode = modeIndex; 
+        document.getElementById('mode-selector-title').textContent = title; 
+        document.getElementById('mode-selector-modal').classList.remove('hidden'); 
+    }
+
+    // 3. ฟังก์ชันปิดหน้าต่าง (กดกากบาท หรือ ย้อนกลับ)
+    function closeModeSelector() {
+        document.getElementById('mode-selector-modal').classList.add('hidden'); 
+    }
+
+// 4. ฟังก์ชันเมื่อกดเลือกปุ่ม (แก้ไข: ตัดดีเลย์ออก ไม่ให้เห็นเมนูแวบๆ)
+    function selectMode(type) {
+        // 1. สั่งเริ่มเกมทันที (เพื่อให้ฉากหลังเปลี่ยนเป็นหน้าเกมก่อน)
+        if(type === 'normal') startGame(selectedProblemMode, false);
+        else if(type === 'hard') startGame(selectedProblemMode, true);
+        else if(type === 'compete') startCompetition(selectedProblemMode, false);
+        else if(type === 'master') startCompetition(selectedProblemMode, true);
+
+        // 2. ค่อยปิดหน้าต่างเลือกโหมด (Modal) ตามหลัง
+        closeModeSelector();
+    }
+
+    let currentMode = 1; let isHardMode = false; let isCompetition = false;
+    let score = 0; let timeLeft = 180; let timerInterval = null; 
+    let currentDivisor = 2; 
+    let focusedInput = null; 
+    let lastFocusedInputBeforeModal = null; 
+    let totalMistakes = 0; let totalCorrect = 0; 
+    let isScoreSubmitted = false; let completedProblems = 0; 
+    let errCountDiv = 0; let errCountMul = 0; let errCountSub = 0; let errCountBring = 0; 
+    
+    let adaptiveStreak = 0; 
+    let mixedLevel = 0; 
+    
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // URL Google Script
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbztAFoR9h-0yLkFOwj7pE4_U8yCK1fKWrVJ7LjDMCmwKMF1Eg0Brs5SZU2vEbSpsxBT/exec"; 
+
+    function updateMascot(state) {
+        const container = document.getElementById('mascot-container');
+        if(!container) return;
+        container.classList.remove('mascot-pop');
+        void container.offsetWidth; 
+        container.classList.add('mascot-pop');
+        ['eye-happy', 'eye-sad', 'eye-think', 'mouth-happy', 'mouth-sad', 'mouth-think'].forEach(id => {
+            const el = document.getElementById(id); if(el) el.style.display = 'none';
+        });
+        const eyeNormal = document.getElementById('eye-normal');
+        const mouthNormal = document.getElementById('mouth-normal');
+        if(eyeNormal) eyeNormal.style.display = 'block';
+        if(mouthNormal) mouthNormal.style.display = 'block';
+        if (state === 'happy' || state === 'super') {
+            if(eyeNormal) eyeNormal.style.display = 'none'; document.getElementById('eye-happy').style.display = 'block';
+            if(mouthNormal) mouthNormal.style.display = 'none'; document.getElementById('mouth-happy').style.display = 'block';
+        } else if (state === 'sad') {
+            if(eyeNormal) eyeNormal.style.display = 'none'; document.getElementById('eye-sad').style.display = 'block';
+            if(mouthNormal) mouthNormal.style.display = 'none'; document.getElementById('mouth-sad').style.display = 'block';
+        } else if (state === 'think') {
+            if(eyeNormal) eyeNormal.style.display = 'none'; document.getElementById('eye-think').style.display = 'block';
+            if(mouthNormal) mouthNormal.style.display = 'none'; document.getElementById('mouth-think').style.display = 'block';
+        }
+    }
+
+    function clearEffects() {
+        const stars = document.querySelectorAll('.floating-star, .falling-star-confetti, .bonus-star');
+        stars.forEach(el => el.remove());
+    }
+
+    function showFloatingStar(targetEl) {
+        const card = document.querySelector('.card');
+        if (!card || !targetEl) return;
+        const rect = targetEl.getBoundingClientRect();
+        const cardRect = card.getBoundingClientRect();
+        const x = (rect.left - cardRect.left) + (rect.width / 2) - 15; 
+        const y = (rect.top - cardRect.top) - 10;
+        const el = document.createElement('div'); 
+        el.className = 'floating-star';
+        el.style.width = '30px'; 
+        el.style.height = '30px';
+        el.style.left = x + 'px'; 
+        el.style.top = y + 'px';
+        el.innerHTML = `<svg viewBox="0 0 24 24" style="width:100%;height:100%;overflow:visible;"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="#F1C40F" stroke="#F39C12" stroke-width="1"/></svg>`;
+        card.appendChild(el);
+        setTimeout(() => { if(el.parentNode) el.parentNode.removeChild(el); }, 1000);
+    }
+
+    function showBonusStars(targetEl) {
+        const rect = targetEl.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        for (let i = 0; i < 5; i++) {
+            const el = document.createElement('div'); 
+            el.className = 'bonus-star';
+            el.style.left = (centerX - 20) + 'px'; 
+            el.style.top = (centerY - 20) + 'px';
+            const tx = (Math.random() - 0.5) * 300; 
+            const ty = -150 - (Math.random() * 150); 
+            el.style.setProperty('--tx', `${tx}px`); 
+            el.style.setProperty('--ty', `${ty}px`); 
+            el.style.animationDelay = (i * 0.05) + 's';
+            el.innerHTML = `<svg viewBox="0 0 24 24" style="width:100%;height:100%;overflow:visible;"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="#FFD700" stroke="#F1C40F" stroke-width="1"/></svg>`;
+            document.body.appendChild(el); 
+            setTimeout(() => { if(el.parentNode) el.parentNode.removeChild(el); }, 2000);
+        }
+    }
+
+    function playSound(type) {
+        try {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+            if(type === 'correct'){ osc.type = 'sine'; osc.frequency.setValueAtTime(800, now); osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1); gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3); osc.start(); osc.stop(now + 0.3); }
+            else if(type === 'wrong'){ osc.type = 'triangle'; osc.frequency.setValueAtTime(150, now); osc.frequency.linearRampToValueAtTime(100, now + 0.2); gain.gain.setValueAtTime(0.1, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.3); osc.start(); osc.stop(now + 0.3); }
+            else if(type === 'complete'){ const notes = [523.25, 659.25, 783.99, 1046.50]; notes.forEach((freq, i) => { const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type = 'square'; o.frequency.value = freq; g.gain.setValueAtTime(0.05, now + i*0.1); g.gain.exponentialRampToValueAtTime(0.001, now + i*0.1 + 0.3); o.start(now + i*0.1); o.stop(now + i*0.1 + 0.3); }); }
+            else if(type === 'warning'){ osc.type = 'square'; osc.frequency.setValueAtTime(400, now); gain.gain.setValueAtTime(0.1, now); osc.start(); osc.stop(now+0.1); }
+            else if(type === 'timeout'){ osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, now); osc.frequency.linearRampToValueAtTime(50, now+0.5); gain.gain.setValueAtTime(0.2, now); osc.start(); osc.stop(now+0.5); }
+            else if(type === 'click'){ osc.type = 'sine'; osc.frequency.setValueAtTime(600, now); gain.gain.setValueAtTime(0.05, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08); osc.start(); osc.stop(now + 0.08); } 
+        } catch (e) { console.log('Audio error:', e); }
+    }
+    function showMenu() { if(timerInterval) clearInterval(timerInterval); document.getElementById('menu-screen').classList.remove('hidden'); document.getElementById('game-screen').classList.add('hidden'); document.getElementById('result-modal').classList.add('hidden'); document.getElementById('quit-modal').classList.add('hidden'); document.getElementById('skip-modal').classList.add('hidden'); document.getElementById('report-setup-modal').classList.add('hidden'); document.getElementById('report-card-modal').classList.add('hidden'); document.getElementById('help-modal').classList.add('hidden'); document.getElementById('error-modal').classList.add('hidden'); clearEffects(); }
+    function goHome() { if(isCompetition) document.getElementById('quit-modal').classList.remove('hidden'); else showMenu(); }
+    function closeQuitModal() { 
+    document.getElementById('quit-modal').classList.add('hidden'); 
+    
+           // เพิ่มส่วนนี้เพื่อให้เคอร์เซอร์กลับไปที่ช่องเดิม
+    setTimeout(() => { 
+        if (focusedInput) { 
+            focusedInput.focus(); 
+        } 
+        }, 50); 
+    }
+    function confirmQuit() { closeQuitModal(); showMenu(); }
+    function closeModal() { document.getElementById('result-modal').classList.add('hidden'); showMenu(); }
+    function showTable() { if (focusedInput) { lastFocusedInputBeforeModal = focusedInput; } else { const sorted = getSortedInputs(); if (sorted.length > 0) { lastFocusedInputBeforeModal = sorted[0]; } } let html = `<div class="multiplication-title">สูตรคูณแม่ ${currentDivisor}</div>`; html += `<div class="multi-scroll-area">`; for(let i=0; i<=12; i++) { html += `<div class="multi-row">${currentDivisor} × ${i} = ${currentDivisor*i}</div>`; } html += `</div>`; document.getElementById('table-content').innerHTML = html; document.getElementById('table-modal').classList.remove('hidden'); }
+    function closeTableModal() { document.getElementById('table-modal').classList.add('hidden'); setTimeout(() => { let targetToFocus = lastFocusedInputBeforeModal; const isTargetValid = targetToFocus && document.body.contains(targetToFocus) && !targetToFocus.readOnly; if (!isTargetValid) { const sorted = getSortedInputs(); if (sorted.length > 0) targetToFocus = sorted[0]; } if (targetToFocus) { targetToFocus.focus(); focusedInput = targetToFocus; } }, 50); }
+    function confirmSkip() { adaptiveStreak = 0; if (currentMode === 9 && !isCompetition && mixedLevel > 0) { mixedLevel--; } document.getElementById('skip-modal').classList.add('hidden'); generateNewProblem(); }
+    function closeSkipModal() { document.getElementById('skip-modal').classList.add('hidden'); setTimeout(() => { if (focusedInput && document.body.contains(focusedInput) && !focusedInput.readOnly) { focusedInput.focus(); } else { const sorted = getSortedInputs(); const nextInput = sorted.find(inp => !inp.readOnly); if (nextInput) { nextInput.focus(); focusedInput = nextInput; } } }, 50); }
+
+    function keypadPress(num) {
+        if(focusedInput && !focusedInput.readOnly) {
+            if (focusedInput.classList.contains('answer-input')) { focusedInput.value += num; } else { focusedInput.value = num; }
+            const event = new Event('input', { bubbles: true }); focusedInput.dispatchEvent(event);
+        }
+    }
+    function keypadDel() {
+        if(focusedInput && !focusedInput.readOnly) {
+            if (focusedInput.classList.contains('answer-input')) { focusedInput.value = focusedInput.value.slice(0, -1); } else { focusedInput.value = ''; }
+            const event = new Event('input', { bubbles: true }); focusedInput.dispatchEvent(event);
+        }
+    }
+
+    function getSortedInputs() {
+        const inputs = Array.from(document.querySelectorAll('input:not([readonly])'));
+        return inputs.sort((a, b) => {
+            const orderA = parseInt(a.dataset.order) || 99999;
+            const orderB = parseInt(b.dataset.order) || 99999;
+            if (orderA !== orderB) return orderA - orderB;
+            const rectA = a.getBoundingClientRect(); const rectB = b.getBoundingClientRect();
+            return rectA.left - rectB.left;
+        });
+    }
+
+    function keypadNext() {
+        if (isCompetition && focusedInput && !focusedInput.readOnly) {
+            validateInput(focusedInput, true); 
+        } else {
+            const sorted = getSortedInputs();
+            if (sorted.length > 0) { const firstAvailable = sorted[0]; firstAvailable.focus(); focusedInput = firstAvailable; }
+        }
+    }
+
+    function showToast(durationOrMsg, duration = 1500) { let msg = durationOrMsg; if (typeof durationOrMsg === 'number') { duration = durationOrMsg; msg = "ยอดเยี่ยม! 🌟"; } const messages = ["ยอดเยี่ยม! 🌟", "เก่งมาก! 👍", "ถูกต้องนะครับ! ✅", "สุดยอดไปเลย! 🔥", "เยี่ยมยอด! 🎉"]; if (!msg || typeof msg === 'number') { msg = messages[Math.floor(Math.random() * messages.length)]; } const toast = document.getElementById('toast-message'); toast.textContent = msg; toast.classList.remove('hidden'); void toast.offsetWidth; toast.classList.add('show'); setTimeout(() => { toast.classList.remove('show'); setTimeout(() => { toast.classList.add('hidden'); }, 300); }, duration); }
+
+    function startGame(mode, isHard) { currentMode = mode; isHardMode = isHard; isCompetition = false; adaptiveStreak = 0; mixedLevel = 0; setupUI(mode, isHard ? "ท้าทาย" : "ฝึกฝน", false); generateNewProblem(); }
+    function startCompetition(mode, isHard) { if (timerInterval) clearInterval(timerInterval); if (audioCtx.state === 'suspended') audioCtx.resume(); currentMode = mode; isHardMode = isHard; isCompetition = true; setupUI(mode, isHard ? "พิชิต" : "ประลอง", true); score = 0; totalMistakes = 0; totalCorrect = 0; completedProblems = 0; errCountDiv = 0; errCountMul = 0; errCountSub = 0; errCountBring = 0; timeLeft = 180; isScoreSubmitted = false; updateHUD(); timerInterval = setInterval(updateTimer, 1000); generateNewProblem(); }
+    function updateTimer() { timeLeft--; const timerEl = document.getElementById('timer-val'); if (timeLeft <= 10 && timeLeft > 0) { timerEl.classList.add('timer-warning'); playSound('warning'); } else { timerEl.classList.remove('timer-warning'); } if (timeLeft <= 0) { clearInterval(timerInterval); playSound('timeout'); endCompetition(); } updateHUD(); }
+    
+    function setupUI(mode, tag, comp) {
+        let names = ["", "2 หลัก / ผลหาร 1 หลัก (ลงตัว)", "2 หลัก / ผลหาร 2 หลัก (ลงตัว)", "2 หลัก / ผลหาร 1 หลัก (มีเศษ)", "2 หลัก / ผลหาร 2 หลัก (มีเศษ)", "3 หลัก (ลงตัว)", "3 หลัก (มีเศษ)", "4 หลัก (ลงตัว)", "4 หลัก (มีเศษ)", "รวมมิตร (สุ่ม)"];
+        let container = document.getElementById('mode-display-wrapper'); let scoreArea = document.getElementById('scoring-info-area');
+        let tagColor; if (comp) { tagColor = (tag === 'พิชิต') ? '#C0392B' : '#9B59B6'; } else { tagColor = (tag === 'ท้าทาย') ? '#1E8449' : '#2980B9'; }
+        container.innerHTML = `<div class="game-header-badge"><span class="header-tag" style="background-color:${tagColor};">${tag}</span><span class="header-mission" style="color:${tagColor};">${names[mode]}</span></div>`;
+        if (comp) { scoreArea.innerHTML = `<div class="scoring-info-block">คะแนน: ช่องละ 10 / จบข้อ 50</div><div id="mascot-container" style="display:inline-flex; vertical-align:middle;"></div>`; } else { scoreArea.innerHTML = `<div id="error-message" class="feedback-message hidden"></div><div id="mascot-container" style="display:inline-flex; vertical-align:middle;"></div>`; }
+        const mascotHTML = `<svg id="mascot-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M25 50C25 30 35 20 50 20C65 20 75 30 75 50V65H25V50Z" fill="#5D4037"/><circle cx="50" cy="55" r="32" fill="#FAD7A0"/><circle cx="18" cy="55" r="5" fill="#FAD7A0"/><circle cx="82" cy="55" r="5" fill="#FAD7A0"/><path d="M22 45C22 35 30 25 50 25C70 25 78 35 78 45C78 45 70 35 50 35C30 35 22 45 22 45Z" fill="#5D4037"/><path d="M35 25L32 12L42 18L50 8L58 18L68 12L65 25H35Z" fill="#FFD700" stroke="#F1C40F" stroke-width="2"/><circle cx="50" cy="18" r="3" fill="#E74C3C"/><circle cx="35" cy="65" r="4" fill="#F5B7B1" opacity="0.6"/><circle cx="65" cy="65" r="4" fill="#F5B7B1" opacity="0.6"/><g id="mascot-eyes"><g id="eye-normal"><ellipse cx="38" cy="52" rx="4" ry="6" fill="#2C3E50"/><circle cx="39" cy="50" r="1.5" fill="white"/><ellipse cx="62" cy="52" rx="4" ry="6" fill="#2C3E50"/><circle cx="63" cy="50" r="1.5" fill="white"/></g><g id="eye-happy" style="display:none"><path d="M34 52 Q38 46 42 52" stroke="#2C3E50" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M58 52 Q62 46 66 52" stroke="#2C3E50" stroke-width="3" fill="none" stroke-linecap="round"/></g><g id="eye-sad" style="display:none"><path d="M34 54 Q38 50 42 54" stroke="#2C3E50" stroke-width="2" fill="none"/><path d="M58 54 Q62 50 66 54" stroke="#2C3E50" stroke-width="2" fill="none"/><circle cx="36" cy="58" r="2" fill="#3498DB" opacity="0.6"/></g><g id="eye-think" style="display:none"><ellipse cx="38" cy="50" rx="4" ry="6" fill="#2C3E50"/><line x1="58" y1="48" x2="66" y2="48" stroke="#2C3E50" stroke-width="2"/></g></g><g id="mascot-mouth"><path id="mouth-normal" d="M45 68 Q50 72 55 68" stroke="#C0392B" stroke-width="2" fill="none" stroke-linecap="round"/><path id="mouth-happy" d="M40 68 Q50 78 60 68Z" fill="#E74C3C" style="display:none"/><path id="mouth-sad" d="M45 72 Q50 68 55 72" stroke="#C0392B" stroke-width="2" fill="none" stroke-linecap="round" style="display:none"/><circle id="mouth-think" cx="50" cy="72" r="3" fill="#C0392B" style="display:none"/></g></svg>`;
+        document.getElementById('mascot-container').innerHTML = mascotHTML;
+        document.getElementById('menu-screen').classList.add('hidden'); document.getElementById('game-screen').classList.remove('hidden'); document.getElementById('timer-val').classList.remove('timer-warning');
+        const hud = document.getElementById('comp-hud'); if(comp) hud.classList.remove('hidden'); else hud.classList.add('hidden');
+        const nextBtn = document.getElementById('btn-next-top'); if(comp) nextBtn.style.display = 'none'; else nextBtn.style.display = 'flex';
+        const tableBtn = document.getElementById('btn-table'); if(comp) tableBtn.classList.add('hidden'); else tableBtn.classList.remove('hidden');
+    }
+    function updateHUD() { document.getElementById('timer-val').textContent = `${Math.floor(timeLeft/60).toString().padStart(2,'0')}:${(timeLeft%60).toString().padStart(2,'0')}`; document.getElementById('score-val').textContent = score; }
+    function endCompetition() { document.getElementById('final-score').textContent = score; document.getElementById('result-modal').classList.remove('hidden'); }
+    
+    function checkAndGenerate() { 
+        const inputs = document.querySelectorAll('input.math-input, input.answer-input'); 
+        let allCorrect = true; inputs.forEach(i => { if(!i.classList.contains('correct')) { allCorrect=false; } }); 
+        if(allCorrect) { 
+            updateMascot('super'); 
+            generateNewProblem(); 
+        } else { 
+            document.getElementById('skip-modal').classList.remove('hidden'); document.getElementById('error-message').classList.add('hidden'); 
+        } 
+    }
+
+    function normalizeStr(s) { if (!s) return ""; return s.trim().replace(/^0+/, '') || '0'; }
+
+    function generateNewProblem() {
+        clearEffects(); 
+        setTimeout(() => updateMascot('normal'), 1500);
+        const err = document.getElementById('error-message'); if(err) err.classList.add('hidden');
+        const fixed = document.getElementById('fixed-problem-area');
+        const container = document.getElementById('game-content-area');
+        
+        fixed.innerHTML = ''; 
+        container.innerHTML = ''; 
+        
+        const arrowHTML = `<div id="scroll-indicator" class="scroll-arrow" onclick="scrollArrowClick()"><svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg></div>`;
+        const configs = [{}, { dividendDigits: 2, qDigits: 1, hasRem: false }, { dividendDigits: 2, qDigits: 2, hasRem: false }, { dividendDigits: 2, qDigits: 1, hasRem: true }, { dividendDigits: 2, qDigits: 2, hasRem: true }, { dividendDigits: 3, qDigits: 0, hasRem: false }, { dividendDigits: 3, qDigits: 0, hasRem: true }, { dividendDigits: 4, qDigits: 0, hasRem: false }, { dividendDigits: 4, qDigits: 0, hasRem: true },];
+        let cfg; 
+        if (currentMode === 9) { 
+            if (!isCompetition) {
+                let possibleModes = []; if (mixedLevel === 0) possibleModes = [1, 2, 3, 4]; else if (mixedLevel === 1) possibleModes = [5, 6]; else if (mixedLevel === 2) possibleModes = [7, 8]; else possibleModes = [1, 2, 3, 4, 5, 6, 7, 8]; 
+                const rndMode = possibleModes[Math.floor(Math.random() * possibleModes.length)]; cfg = configs[rndMode];
+            } else { const randomMode = Math.floor(Math.random() * 8) + 1; cfg = configs[randomMode]; }
+        } else { cfg = configs[currentMode]; }
+
+        let dividend, divisor, quotient, remainder;
+        let attempts = 0;
+        while (true) {
+            attempts++; 
+            if (!isCompetition && currentMode !== 9 && adaptiveStreak < 2) { divisor = Math.floor(Math.random() * 4) + 2; } else { divisor = Math.floor(Math.random() * 8) + 2; }
+            let qMin, qMax;
+            if (cfg.qDigits === 1) { qMin = 1; qMax = 9; } else if (cfg.qDigits === 2) { qMin = 10; qMax = 99; } else { let minDiv = Math.pow(10, cfg.dividendDigits - 1); let maxDiv = Math.pow(10, cfg.dividendDigits) - 1; qMin = Math.ceil(minDiv / divisor); qMax = Math.floor(maxDiv / divisor); }
+            if (qMin > qMax) continue;
+            quotient = Math.floor(Math.random() * (qMax - qMin + 1)) + qMin;
+            if (cfg.hasRem) { remainder = Math.floor(Math.random() * (divisor - 1)) + 1; } else { remainder = 0; }
+            dividend = (quotient * divisor) + remainder;
+            if (dividend.toString().length === cfg.dividendDigits) { break; }
+            if (attempts > 500) { if (cfg.dividendDigits === 4) { dividend = 1000; divisor=2; quotient=500; remainder=0; } else if (cfg.dividendDigits === 3) { dividend = 100; divisor=2; quotient=50; remainder=0; } else { dividend = 10; divisor=2; quotient=5; remainder=0; } break; }
+        }
+        
+        currentDivisor = divisor;
+        const divStr = dividend.toString(); const steps = solveDivision(dividend, divisor);
+        const pDiv = document.createElement('div'); pDiv.className = 'problem-statement'; pDiv.innerHTML = `${dividend} ÷ ${divisor} = <span class="problem-box"></span>`; fixed.appendChild(pDiv);
+        
+        renderSplitGrid(container, steps, divisor, divStr);
+        
+        const scrollWrapper = container.querySelector('.grid-scroll-wrapper');
+        const aDiv = document.createElement('div'); 
+        aDiv.className = 'answer-section';
+        aDiv.id = 'final-answer-row';
+        
+        if (isHardMode || isCompetition) { aDiv.classList.add('step-hidden'); }
+
+        const label1 = document.createElement('span'); label1.className = 'answer-label'; label1.textContent = 'ตอบ'; aDiv.appendChild(label1);
+        const finalQ = steps.q; const inputQ = createInput(finalQ, 'q', false, {type: 'ans_q', divisor: divisor}); aDiv.appendChild(inputQ); 
+
+        if(cfg.hasRem || parseInt(dividend)%divisor > 0) {
+            const rem = parseInt(dividend)%divisor;
+            const label2 = document.createElement('span'); label2.style.marginLeft = '10px'; label2.style.marginRight = '5px'; label2.textContent = 'เศษ'; aDiv.appendChild(label2);
+            const inputR = createInput(rem.toString(), 'r', false, {type: 'ans_r', minuend: 'result', subtrahend: 'prod'}); aDiv.appendChild(inputR);
+        }
+        
+        if(scrollWrapper) { scrollWrapper.appendChild(aDiv); }
+
+	container.insertAdjacentHTML('beforeend', arrowHTML); // ใส่ปุ่มลงในจอ
+    	setTimeout(checkScrollIndicator, 100); // เรียกเช็คปุ่ม (ดีเลย์นิดนึงรอ Render)
+        checkScrollIndicator();
+        updateStepVisibility();
+        
+        setTimeout(() => {
+            const sorted = getSortedInputs();
+            const first = sorted.find(inp => !inp.readOnly);
+            if(first) { 
+                focusedInput = first; 
+                first.focus(); 
+                if (document.activeElement !== first) { setTimeout(() => first.focus(), 100); }
+            }
+        }, 100);
+    }
+
+    function updateStepVisibility() {
+        if (!isHardMode) { document.querySelectorAll('.step-hidden').forEach(el => el.classList.remove('step-hidden')); return; }
+        const sortedInputs = getSortedInputs();
+        let targetStep = 99999;
+        const firstIncomplete = sortedInputs.find(i => !i.classList.contains('correct'));
+        if (firstIncomplete && firstIncomplete.dataset.order) { targetStep = parseInt(firstIncomplete.dataset.order); }
+        document.querySelectorAll('.cell[data-order]').forEach(el => {
+            const ord = parseInt(el.dataset.order);
+            if (ord > targetStep) { el.classList.add('step-hidden'); } else { el.classList.remove('step-hidden'); }
+        });
+    }
+
+    function solveDivision(dividend, divisor) {
+        let s = dividend.toString(); let rows = [], rem = 0, qStr = "";
+        for(let i=0; i<s.length; i++) {
+            let curr = (i===0) ? parseInt(s[i]) : (rem*10)+parseInt(s[i]);
+            let q = Math.floor(curr/divisor); qStr += q;
+            rows.push({ q:q, prod:q*divisor, rem:curr-(q*divisor) }); rem = rows[rows.length-1].rem;
+        }
+        return { q:qStr, rows:rows };
+    }
+
+    function renderSplitGrid(root, sol, div, divStr) {
+        const isMob = window.innerWidth<=700; const sz = isMob?'30px':'48px'; const br = isMob?'15px':'30px'; let cols = `${sz} ${br}`; for(let i=0; i<divStr.length; i++) cols += ` ${sz}`;
+        const header = document.createElement('div'); header.className = 'division-header'; header.style.gridTemplateColumns = cols;
+        let candidates = []; addCell(header, '',''); addCell(header, '',''); 
+        let sig=false;
+        for(let i=0; i<divStr.length; i++) {
+            let val = sol.q[i]; let order = (i * 3) + 1; let stepInfo = { type: 'q', divisor: div };
+            if(val==='0' && !sig && i<divStr.length-1) { if(i===divStr.length-1) addCell(header, val, 'num', true, candidates, order, stepInfo); else addCell(header, '',''); } else { sig=true; addCell(header, val, 'num', true, candidates, order, stepInfo); }
+        }
+        addCell(header, div, 'num'); 
+        
+        const b = document.createElement('div'); 
+        b.className='cell bracket-side'; 
+        b.style.position = 'relative'; 
+        b.innerHTML = `
+            <div style="position:absolute; top:0; right:0; width:84%; border-top:2px solid #000; height:0;"></div>
+            <svg viewBox="0 0 30 50" style="width:100%;height:100%;display:block" preserveAspectRatio="none">
+                <path d="M5,50 Q30,25 5,0" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="round"/>
+            </svg>`; 
+        header.appendChild(b);
+
+        for(let c of divStr) addCell(header, c, 'num bracket-top'); 
+        root.appendChild(header);
+
+        const scroll = document.createElement('div'); scroll.className = 'grid-scroll-wrapper'; scroll.addEventListener('scroll', checkScrollIndicator);
+        const body = document.createElement('div'); body.className = 'division-body'; body.style.gridTemplateColumns = cols;
+
+        sol.rows.forEach((r, idx) => {
+            let pStr = r.prod.toString(); let prodOrder = (idx * 3) + 2; let remOrder = (idx * 3) + 3; let prodStepInfo = { type: 'prod', divisor: div };
+            if(idx===0 && r.q===0) return;
+            for(let c=0; c<2+divStr.length; c++) { 
+                let end = 2+idx, start = end-pStr.length+1; 
+                if(c>=start && c<=end) addCell(body, pStr[c-start], 'num underline', true, candidates, prodOrder, prodStepInfo); 
+                else addCell(body, '', '', false, null, prodOrder); 
+            }
+            if(idx < divStr.length-1) {
+                let nVal = (r.rem*10)+parseInt(divStr[idx+1]); let nStr = nVal.toString(); let end = 2+idx+1, start = end-nStr.length+1;
+                for(let c=0; c<2+divStr.length; c++) { 
+                    if(c>=start && c<=end) { 
+                        let charIndex = c - start; let isBringDown = (charIndex === nStr.length - 1); let stepInfo = isBringDown ? { type: 'bring' } : { type: 'sub' }; 
+                        addCell(body, nStr[c-start], 'num', true, candidates, remOrder, stepInfo); 
+                    } else addCell(body, '', '', false, null, remOrder); 
+                }
+            } else {
+                let rStr = r.rem.toString(); let end = 2+idx, start = end-rStr.length+1; let subStepInfo = { type: 'sub' };
+                for(let c=0; c<2+divStr.length; c++) { 
+                    if(c>=start && c<=end) addCell(body, rStr[c-start], 'num double-underline', true, candidates, remOrder, subStepInfo); 
+                    else addCell(body, '', '', false, null, remOrder); 
+                }
+            }
+        });
+        scroll.appendChild(body); root.appendChild(scroll);
+
+        if (candidates.length > 0) {
+            let countToHide = 0;
+            if (isHardMode) { countToHide = candidates.length; } else { const total = candidates.length; const min = Math.ceil(total * 0.50); const max = Math.ceil(total * 0.75); countToHide = Math.floor(Math.random() * (max - min + 1)) + min; countToHide = Math.max(1, Math.min(countToHide, total)); }
+            candidates.sort(() => Math.random() - 0.5);
+            for(let i=0; i<countToHide; i++) { const item = candidates[i]; item.el.textContent = ''; const input = createInput(item.val, 'calc', true, item.stepInfo); input.dataset.order = item.order; input.tabIndex = item.order; item.el.appendChild(input); }
+        }
+    }
+
+
+// --- นำไปวางไว้ช่วงท้ายๆ ของ Script หรือแทนที่ฟังก์ชันเดิม ---
+
+function checkScrollIndicator() {
+    const scroll = document.querySelector('.grid-scroll-wrapper'); 
+    const indicator = document.getElementById('scroll-indicator'); 
+    if (!scroll || !indicator) return;
+
+    // เช็คว่าเนื้อหายาวเกินจอไหม (+10 เผื่อระยะคลาดเคลื่อน)
+    const isOverflowing = scroll.scrollHeight > scroll.clientHeight + 10;
+    
+    if (isOverflowing) { 
+        indicator.classList.add('visible'); // สั่งให้ CSS แสดงปุ่ม
+        
+        // คำนวณว่าเลื่อนถึงล่างสุดหรือยัง
+        const isAtBottom = Math.ceil(scroll.scrollTop + scroll.clientHeight) >= scroll.scrollHeight - 20;
+        
+        if (isAtBottom) {
+            indicator.classList.add('is-up'); // เปลี่ยนเป็นลูกศรชี้ขึ้น
+        } else {
+            indicator.classList.remove('is-up'); // เปลี่ยนเป็นลูกศรชี้ลง
+        }
+    } else { 
+        indicator.classList.remove('visible'); // ซ่อนถ้าเนื้อหาไม่ยาวพอ
+        indicator.classList.remove('is-up'); 
+    }
+}
+
+function scrollArrowClick() {
+    const scroll = document.querySelector('.grid-scroll-wrapper'); 
+    const indicator = document.getElementById('scroll-indicator'); 
+    if (!scroll || !indicator) return;
+    
+    if (indicator.classList.contains('is-up')) { 
+        // ถ้าเป็นลูกศรขึ้น ให้เลื่อนไปบนสุด
+        scroll.scrollTo({ top: 0, behavior: 'smooth' }); 
+    } else { 
+        // ถ้าเป็นลูกศรลง ให้เลื่อนไปล่างสุด
+        scroll.scrollTo({ top: scroll.scrollHeight, behavior: 'smooth' }); 
+    }
+}
+
+    function addCell(con, txt, type, isCandidate=false, candidateList=null, order=0, stepInfo=null) {
+        const d = document.createElement('div'); d.className = 'cell ' + (type==='num'?'':type);
+        if(type.includes('underline')) d.classList.add(type.includes('double')?'double-underline':'underline'); if(type.includes('bracket-top')) d.classList.add('bracket-top');
+        d.textContent = txt; 
+        if (order > 0) { d.dataset.order = order; if (isHardMode && order > 1) { d.classList.add('step-hidden'); } }
+        if(isCandidate && txt !== '' && candidateList) { candidateList.push({ el: d, val: txt, order: order, stepInfo: stepInfo }); }
+        con.appendChild(d);
+    }
+
+    function validateInput(target, isManualTrigger) {
+        const ans = target.dataset.ans;
+        const val = target.value.trim().replace(/[๐-๙]/g, d => '0123456789'['๐๑๒๓๔๕๖๗๘๙'.indexOf(d)]);
+        const normVal = normalizeStr(val); const normAns = normalizeStr(ans); const isMatch = (normVal === normAns);
+
+        if(isCompetition && isManualTrigger && val === '') return; 
+        if(!isCompetition && val === '') return; 
+
+        target.classList.remove('correct', 'incorrect', 'partial');
+
+        if (isMatch) {
+            target.classList.add('correct'); target.readOnly = true; 
+            
+            if(isCompetition) { score += 10; totalCorrect++; }
+            updateStepVisibility();
+            
+            if (isHardMode || isCompetition) {
+                const gridInputs = document.querySelectorAll('input.math-input');
+                let gridComplete = true;
+                gridInputs.forEach(inp => { if(!inp.classList.contains('correct')) gridComplete = false; });
+                if (gridComplete) {
+                    const finalRow = document.getElementById('final-answer-row');
+                    if (finalRow && finalRow.classList.contains('step-hidden')) {
+                        finalRow.classList.remove('step-hidden');
+                        setTimeout(() => {
+                            const scrollWrapper = document.querySelector('.grid-scroll-wrapper');
+                            if(scrollWrapper) scrollWrapper.scrollTo({ top: scrollWrapper.scrollHeight, behavior: 'smooth' });
+                        }, 100);
+                    }
+                }
+            }
+
+            const allInputs = document.querySelectorAll('input.math-input, input.answer-input');
+            let allOk = true;
+            for (let i = 0; i < allInputs.length; i++) { if (!allInputs[i].classList.contains('correct')) { allOk = false; break; } }
+
+            if(allOk) {
+                if(isCompetition) { score += 50; completedProblems++; }
+                if (!isCompetition) { adaptiveStreak++; if (currentMode === 9 && adaptiveStreak >= 2 && mixedLevel < 3) { mixedLevel++; adaptiveStreak = 0; } }
+                
+                const errEl = document.getElementById('error-message'); if(errEl) errEl.classList.add('hidden');
+                
+                showFloatingStar(target); 
+                playSound('correct'); 
+                
+                setTimeout(() => {
+                    playSound('complete');        
+                    showBonusStars(target);       
+                    updateMascot('super');
+                    
+                    if(isCompetition) { 
+                        setTimeout(generateNewProblem, 1200); 
+                    } 
+                }, 400); 
+
+            } else {
+                playSound('correct'); 
+                updateMascot('happy');
+                showFloatingStar(target); 
+            }
+
+            const sorted = getSortedInputs();
+            const nextInput = sorted.find(inp => !inp.readOnly && !inp.closest('.step-hidden'));
+            if (nextInput) { setTimeout(() => { if(nextInput) { nextInput.focus(); focusedInput = nextInput; } }, 100); }
+
+            updateHUD();
+        } else if (!isCompetition && normAns.startsWith(normVal)) {
+            target.classList.add('partial'); updateMascot('think');
+        } else {
+            target.classList.remove('incorrect'); void target.offsetWidth; target.classList.add('incorrect');
+            playSound('wrong'); updateMascot('sad');
+            if (!isCompetition) { adaptiveStreak = 0; }
+            if(isCompetition) { 
+                totalMistakes++; 
+                const sType = target.dataset.stepType;
+                if (sType === 'q' || sType === 'ans_q') errCountDiv++; else if (sType === 'prod') errCountMul++; else if (sType === 'sub' || sType === 'ans_r') errCountSub++; else if (sType === 'bring') errCountBring++; else errCountDiv++; 
+                updateHUD(); 
+            }
+            if (!isCompetition) { target.wrongCount = (target.wrongCount || 0) + 1; if (target.wrongCount >= 2) { showSmartFeedback(target); } }
+        }
+    }
+
+    function createInput(ans, mode, autoCheck, stepInfo={}) {
+        const i = document.createElement('input'); i.className = mode==='calc' ? 'math-input' : 'answer-input'; i.dataset.ans = ans;
+        if(stepInfo) { i.dataset.stepType = stepInfo.type || ''; if(stepInfo.divisor) i.dataset.divisor = stepInfo.divisor; } i.wrongCount = 0; 
+        if (mode !== 'calc') { i.dataset.order = 9999; i.tabIndex = 9999; }
+        
+        const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        if (isTouch) { i.setAttribute('inputmode', 'none'); } else { i.setAttribute('inputmode', 'numeric'); } i.setAttribute('autocomplete', 'off');
+        
+        i.onfocus = (e) => { 
+            if (!isCompetition) {
+                const sorted = getSortedInputs();
+                if (sorted.length > 0) {
+                    const currentStep = sorted.find(inp => !inp.readOnly);
+                    if (currentStep && i !== currentStep && !i.readOnly) { i.classList.add('incorrect'); setTimeout(() => i.classList.remove('incorrect'), 500); setTimeout(() => { currentStep.focus(); }, 10); return; }
+                }
+            }
+            focusedInput = i; 
+            const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+            if (!isTouch) { setTimeout(() => { i.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' }); }, 300); }
+        };
+
+        i.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === 'Tab') { 
+                e.preventDefault(); 
+                if (isCompetition) { validateInput(i, true); const sorted = getSortedInputs(); const next = sorted.find(inp => !inp.readOnly && !inp.classList.contains('step-hidden')); if (next && next !== i) { next.focus(); focusedInput = next; } } else { keypadNext(); } return; 
+            }
+            if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Backspace', 'Delete'].includes(e.key)) return;
+            if (e.ctrlKey || e.metaKey) return;
+            if (!/[0-9]/.test(e.key)) e.preventDefault();
+        };
+        i.oninput = (e) => {
+            let val = e.target.value.trim().replace(/[๐-๙]/g, d => '0123456789'['๐๑๒๓๔๕๖๗๘๙'.indexOf(d)]);
+            if(mode === 'calc') { if(val.length > 1) { val = val.slice(-1); e.target.value = val; } }
+            if (!isCompetition) { validateInput(e.target, false); }
+        };
+        return i;
+    }
+
+    function showSmartFeedback(input) {
+        const type = input.dataset.stepType; const divisor = input.dataset.divisor || currentDivisor; let msg = "";
+        if (type === 'q') msg = `💡 ลองท่องสูตรคูณแม่ ${divisor} ดูนะครับ`; else if (type === 'prod') msg = `💡 เอ๊ะ! ${divisor} คูณอะไรได้เท่านี้หรือเปล่านะ?`; else if (type === 'sub') msg = `💡 ลบเลขผิดไปนิดเดียว ลองนับนิ้วดูใหม่นะ ✌️`; else if (type === 'bring') msg = `👇 ดูตัวเลขด้านบนดีๆ ต้องชักเลขอะไรลงมาเอ่ย?`; else if (type === 'ans_q') msg = `💡 นำตัวเลขด้านบนสุดมาเติมได้เลยครับ 👆`; else if (type === 'ans_r') msg = `💡 เศษคือตัวเลขที่เหลือด้านล่างสุดครับ 👇`; else msg = `💡 ลองคิดทบทวนดูอีกทีนะครับ สู้ๆ!`;
+        let errArea = document.getElementById('error-message');
+        if (!errArea) { const scoreArea = document.getElementById('scoring-info-area'); if(scoreArea) { scoreArea.innerHTML = `<div id="error-message" class="feedback-message hidden"></div><div id="mascot-container"></div>`; errArea = document.getElementById('error-message'); } }
+        if (errArea) { errArea.textContent = msg; errArea.style.color = "#E67E22"; errArea.classList.remove('hidden'); setTimeout(() => { if(errArea.textContent === msg) { errArea.classList.add('hidden'); } }, 4000); }
+    }
+
+    function openReportSetup() { const savedName = localStorage.getItem('div_player_name') || ''; const savedClass = localStorage.getItem('div_player_class') || ''; const savedNo = localStorage.getItem('div_player_no') || ''; document.getElementById('player-name').value = savedName; document.getElementById('player-class').value = savedClass; document.getElementById('player-no').value = savedNo; document.getElementById('result-modal').classList.add('hidden'); document.getElementById('report-setup-modal').classList.remove('hidden'); }
+    function closeReportSetup() { document.getElementById('report-setup-modal').classList.add('hidden'); document.getElementById('result-modal').classList.remove('hidden'); }
+    function generateReport() {
+        const name = document.getElementById('player-name').value.trim() || 'ผู้เล่นนิรนาม'; 
+        const cls = document.getElementById('player-class').value.trim() || '-'; 
+        const no = document.getElementById('player-no').value.trim() || '-';
+        
+        localStorage.setItem('div_player_name', name); 
+        localStorage.setItem('div_player_class', cls); 
+        localStorage.setItem('div_player_no', no);
+        
+        let grade = 'พยายามอีกนิด'; 
+        if (score >= 350) grade = 'ยอดเยี่ยม'; 
+        else if (score >= 250) grade = 'ดีมาก'; 
+        else if (score >= 150) grade = 'ดี';
+
+let feedbackTitle = "🌟 สุดยอด";
+        let feedbackMsg = "ยอดเยี่ยมมาก! ตอบไม่ผิดเลย";
+        let feedbackBg = "#D5F5E3"; 
+        let feedbackColor = "#196F3D"; 
+
+        // 🔥 เพิ่มเงื่อนไขใหม่: ถ้าคะแนน 0 และไม่ผิดเลย (คือยังไม่ได้ทำ)
+        if (score === 0 && totalMistakes === 0 && totalCorrect === 0) {
+            feedbackTitle = "💪 เป็นกำลังใจให้นะ";
+            feedbackMsg = "ยังไม่ได้ทำโจทย์เลย ลองเริ่มทำดูนะ";
+            feedbackBg = "#F2F3F4"; // สีเทาอ่อน
+            feedbackColor = "#7F8C8D"; // สีเทาเข้ม
+        } 
+        else if (totalMistakes > 0) {
+            // ... (Logic เดิม สำหรับกรณีมีข้อผิดพลาด) ...
+            feedbackTitle = "💡 สิ่งที่ควรฝึกฝน";
+            feedbackBg = "#FEF9E7"; 
+            feedbackColor = "#E67E22"; 
+
+            const maxErr = Math.max(errCountDiv, errCountMul, errCountSub, errCountBring);
+
+            if (errCountDiv === maxErr) {
+                feedbackMsg = "ฝึกหาผลหารและท่องสูตรคูณให้แม่นนะ";
+            } else if (errCountMul === maxErr) {
+                feedbackMsg = "ทบทวนการคูณเลขให้รอบคอบอีกนิดนะ";
+            } else if (errCountSub === maxErr) {
+                feedbackMsg = "ระวังการลบเลขและการยืมตัวเลขนะ";
+            } else {
+                feedbackMsg = "ดูตำแหน่งตัวเลขที่ดึงลงมาให้ดีนะ";
+            }
+        }
+
+        const modeDetails = ["", "2 หลัก / ผลหาร 1 หลัก (ลงตัว)", "2 หลัก / ผลหาร 2 หลัก (ลงตัว)", "2 หลัก / ผลหาร 1 หลัก (มีเศษ)", "2 หลัก / ผลหาร 2 หลัก (มีเศษ)", "3 หลัก (ลงตัว)", "3 หลัก (มีเศษ)", "4 หลัก (ลงตัว)", "4 หลัก (มีเศษ)", "รวมมิตร (สุ่ม)"];
+        let difficultyText = isHardMode ? "พิชิต" : "ประลอง"; 
+        let subModeText = modeDetails[currentMode] || ""; 
+        let currentModeName = `${difficultyText} ${subModeText}`; 
+        if (!isCompetition) { currentModeName = isHardMode ? "ท้าทาย " + subModeText : "ฝึกฝน " + subModeText; }
+        
+        const date = new Date().toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' });
+        
+        const html = `
+            <div class="report-header" style="font-size:1.4rem; margin-bottom:5px;">📜 ใบสรุปผล</div>
+            
+            <div class="report-row" style="font-size:0.9rem; line-height:1.4; margin-bottom:3px;">
+                <span class="report-label" style="width:50px;">ชื่อ:</span>
+                <span class="report-value">${name}</span>
+            </div>
+            <div class="report-row" style="font-size:0.9rem; line-height:1.4; margin-bottom:3px;">
+                <span class="report-label" style="width:50px;">ชั้น:</span>
+                <span class="report-value">${cls}</span>
+            </div>
+            <div class="report-row" style="font-size:0.9rem; line-height:1.4; margin-bottom:3px;">
+                <span class="report-label" style="width:50px;">เลขที่:</span>
+                <span class="report-value">${no}</span>
+            </div>
+            <div class="report-row" style="font-size:0.9rem; line-height:1.4; margin-bottom:3px;">
+                <span class="report-label" style="width:50px;">ภารกิจ:</span>
+                <span class="report-value">${currentModeName}</span>
+            </div>
+            <div class="report-row" style="font-size:0.9rem; line-height:1.4; margin-bottom:5px;">
+                <span class="report-label" style="width:50px;">วันที่:</span>
+                <span class="report-value">${date}</span>
+            </div>
+            
+            <div class="report-grade-box" style="padding: 5px; margin: 5px 0;">
+                <div style="display:flex; justify-content:center; align-items:baseline; gap:10px;">
+                    <span class="report-grade-title" style="font-size:0.85rem;">คะแนนรวม</span>
+                    <span class="report-grade-val" style="font-size:1.8rem; margin:0;">${score}</span>
+                </div>
+                <div class="report-grade-title" style="margin-top:2px; font-size:0.85rem;">ระดับ: ${grade}</div>
+            </div>
+
+            <div style="background-color:${feedbackBg}; border:1px solid ${feedbackColor}; border-radius:10px; padding:6px; margin:5px 0; text-align:center;">
+                <div style="color:${feedbackColor}; font-weight:bold; font-size:0.9rem; margin-bottom:2px;">${feedbackTitle}</div>
+                <div style="color:#555; font-size:0.85rem; line-height:1.3;">"${feedbackMsg}"</div>
+            </div>
+
+            <div class="report-footer" style="font-size:0.65rem; line-height:1.3; margin-top:8px;">
+                ผู้พิชิตการหารยาว | นายยงยศ ศิริสัมพันธ์<br>
+                ตำแหน่ง ครู วิทยฐานะ ครูชำนาญการพิเศษ<br>
+                โรงเรียนวัดสันติธรรม
+            </div>
+        `;
+        
+        document.getElementById('report-card-container').innerHTML = html; 
+        document.getElementById('report-setup-modal').classList.add('hidden'); 
+        document.getElementById('report-card-modal').classList.remove('hidden');
+        
+        const btnSubmit = document.getElementById('btn-submit-score-report');
+        if(!isCompetition) { 
+            btnSubmit.style.display = 'none'; 
+        } else { 
+            btnSubmit.style.display = 'flex'; 
+            if (isScoreSubmitted) { 
+                btnSubmit.disabled = true; 
+                btnSubmit.style.opacity = '1'; 
+                btnSubmit.style.background = '#7F8C8D'; 
+                btnSubmit.innerHTML = '<svg viewBox="0 0 24 24" style="fill:white;width:20px;height:20px;"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg> ส่งแล้ว'; 
+            } else { 
+                btnSubmit.disabled = false; 
+                btnSubmit.style.opacity = '1'; 
+                btnSubmit.style.background = '#27AE60'; 
+                btnSubmit.innerHTML = '<svg viewBox="0 0 24 24" style="fill:white;width:20px;height:20px;"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> ส่งคะแนนครู'; 
+            } 
+        }
+    }
+
+    function submitScoreToSheet() {
+        if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("exec") === false) {
+            alert("กรุณาตรวจสอบ URL ของ Google Script ครับ");
+            return;
+        }
+
+        const btn = document.getElementById('btn-submit-score-report');
+        const originalContent = btn.innerHTML;
+        btn.innerHTML = '⏳ กำลังส่ง...';
+        btn.style.pointerEvents = 'none';
+
+        const pName = localStorage.getItem('div_player_name') || '-';
+        const pClass = localStorage.getItem('div_player_class') || '-';
+        const pNo = localStorage.getItem('div_player_no') || '-';
+
+        const formData = new FormData();
+        formData.append('name', pName);
+        formData.append('class', pClass);
+        formData.append('no', pNo);
+        
+        let modeDetails = ["", "2 หลัก / ผลหาร 1 หลัก (ลงตัว)", "2 หลัก / ผลหาร 2 หลัก (ลงตัว)", "2 หลัก / ผลหาร 1 หลัก (มีเศษ)", "2 หลัก / ผลหาร 2 หลัก (มีเศษ)", "3 หลัก (ลงตัว)", "3 หลัก (มีเศษ)", "4 หลัก (ลงตัว)", "4 หลัก (มีเศษ)", "รวมมิตร (สุ่ม)"];
+        let subModeText = modeDetails[currentMode] || "";
+        let modeName = (isHardMode ? "พิชิต " : "ประลอง ") + subModeText;
+        formData.append('mode', modeName);
+
+        formData.append('score', score);
+        formData.append('completed_problems', completedProblems);
+        formData.append('correct', totalCorrect);
+        formData.append('mistakes', totalMistakes);
+        
+        formData.append('err_div', errCountDiv);
+        formData.append('err_mul', errCountMul);
+        formData.append('err_sub', errCountSub);
+        formData.append('err_bring', errCountBring);
+
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.result === 'success') {
+                isScoreSubmitted = true;
+                document.getElementById('success-modal').classList.remove('hidden');
+                btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:white"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg> ส่งแล้ว';
+                btn.style.background = '#7F8C8D';
+                btn.style.pointerEvents = 'none';
+            } else {
+                throw new Error(data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('error-modal-msg').textContent = "ตรวจสอบเน็ต แล้วกดใหม่อีกทีนะ";
+            document.getElementById('error-modal').classList.remove('hidden');
+            btn.innerHTML = originalContent;
+            btn.style.pointerEvents = 'auto';
+        });
+    }
+
+    function closeReportCard() { document.getElementById('report-card-modal').classList.add('hidden'); showMenu(); }
+    function saveReportImage() { const btn = document.querySelector('.btn-secondary'); if(!btn) return; if (typeof html2canvas === 'undefined') { const originalText = btn.innerHTML; btn.innerHTML = '⏳ กำลังเชื่อมต่อ...'; btn.style.pointerEvents = 'none'; const script = document.createElement('script'); script.src = 'https://html2canvas.hertzen.com/dist/html2canvas.min.js'; script.onload = () => { btn.innerHTML = originalText; btn.style.pointerEvents = 'auto'; saveReportImage(); }; script.onerror = () => { btn.innerHTML = originalText; btn.style.pointerEvents = 'auto'; showSaveError("บันทึกไม่ได้จ้า 😢"); }; document.head.appendChild(script); return; } const originalContent = btn.innerHTML; btn.innerHTML = '⏳ กำลังสร้าง...'; btn.style.pointerEvents = 'none'; const element = document.getElementById('report-card-container'); html2canvas(element, { scale: 3, backgroundColor: '#ffffff', useCORS: true }).then(canvas => { try { const fileName = `Report_${new Date().getTime()}.png`; const link = document.createElement('a'); link.download = fileName; link.href = canvas.toDataURL("image/png"); document.body.appendChild(link); link.click(); document.body.removeChild(link); document.getElementById('saved-modal').classList.remove('hidden'); } catch (e) { showSaveError("บันทึกไม่ได้จ้า 😢"); } finally { resetButton(); } }).catch(err => { showSaveError("บันทึกไม่ได้จ้า 😢"); resetButton(); }); function resetButton() { btn.innerHTML = originalContent; btn.style.pointerEvents = 'auto'; } }
+    function showSaveError(msg) { document.getElementById('save-error-msg').textContent = "ตรวจสอบเน็ต แล้วกดใหม่อีกทีนะ"; document.getElementById('save-error-modal').classList.remove('hidden'); }
+    function closeSavedModal() { document.getElementById('saved-modal').classList.add('hidden'); }
+    function closeSaveErrorModal() { document.getElementById('save-error-modal').classList.add('hidden'); }
+    function openHelpModal() { document.getElementById('help-modal').classList.remove('hidden'); }
+    function closeHelpModal() { document.getElementById('help-modal').classList.add('hidden'); }
+    function editReportInfo() { document.getElementById('report-card-modal').classList.add('hidden'); openReportSetup(); }
+    function closeSuccessModal() { document.getElementById('success-modal').classList.add('hidden'); }
+    function closeErrorModal() { document.getElementById('error-modal').classList.add('hidden'); }
+
+    window.onload = function() {
+        showMenu(); 
+        setTimeout(() => { const splash = document.getElementById('splash-screen'); if(splash) { splash.style.opacity = '0'; setTimeout(() => { splash.style.display = 'none'; }, 500); } }, 2500); 
+        window.addEventListener('resize', checkScrollIndicator);
+        document.addEventListener('mousedown', function(e) { if (document.getElementById('game-screen').classList.contains('hidden')) return; const target = e.target; const isEditableInput = target.tagName === 'INPUT' && !target.readOnly; const isKeypad = target.classList.contains('key-btn') || target.closest('.key-btn'); const isButton = (target.tagName === 'BUTTON' || target.closest('button')) && !isKeypad; if (!isEditableInput && !isButton) { e.preventDefault(); if (focusedInput) focusedInput.focus(); } });
+        document.querySelectorAll('.key-btn').forEach(btn => { btn.addEventListener('touchstart', function(e) { if (e.cancelable) e.preventDefault(); this.click(); if(focusedInput) focusedInput.focus(); }, { passive: false }); });
+    };
+</script>
+</body>
+</html>
