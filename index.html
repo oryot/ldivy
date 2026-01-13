@@ -212,8 +212,8 @@
         @keyframes pulse-red { from { transform: scale(1); opacity: 1; text-shadow: 0 0 0 rgba(192, 57, 43, 0); } to { transform: scale(1.2); opacity: 1; text-shadow: 0 0 10px rgba(192, 57, 43, 0.5); } }
         @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
         .fixed-problem-area { width: 100%; text-align: center; padding-bottom: 5px; flex-shrink: 0; }
-        .problem-statement { font-size: 2rem; font-weight: bold; color: #2E86C1; margin-bottom: 5px; background: transparent; border: 3px solid #D4E6F1; padding: 3px 25px 7px 25px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
-        .problem-box { display: inline-block; width: 1.1em; height: 1.1em; border: 0.1em solid #2E86C1; border-radius: 0.25em; background-color: transparent; box-sizing: border-box; position: relative; top: 0.05em; }
+        .problem-statement { font-size: 2rem; font-weight: bold; color: #2E86C1; margin-bottom: 5px; background: transparent; border: 3px solid #D4E6F1; padding: 5px 25px 8px 25px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
+        .problem-box { display: inline-block; width: 1.3em; height: 1.3em; border: 0.1em solid #2E86C1; border-radius: 0.25em; background-color: transparent; box-sizing: border-box; position: relative; top: 0.05em; }
         
         .division-header { display: inline-grid; margin: 0; font-size: 24px; font-weight: 600; line-height: 1.5; justify-content: center; color: #000; background-color: transparent; z-index: 10; padding-bottom: 0; flex-shrink: 0; column-gap: 0; padding-right: calc(var(--scrollbar-width) + var(--grid-gap-right)); }
         .division-body { display: inline-grid; margin: 0 auto; width: fit-content; font-size: 24px; font-weight: 600; line-height: 1.5; color: #000; column-gap: 0; }
@@ -396,8 +396,15 @@
             .method-label { font-size: 18px; }
             .calculation-area { gap: 8px; } 
             .double-underline::after { bottom: -6.5px; }
-            .problem-box { width: 0.9em; }
-            
+            .problem-box { width: 26px;   /* ความกว้างเท่ากับช่อง math-input ในมือถือ */
+        	height: 32px;  /* ความสูงเท่ากับช่อง math-input ในมือถือ */
+        	top: 0;        /* ยังคงเป็น 0 เพราะใช้ flex ของตัวแม่ช่วยแล้ว */ 
+		}
+            .problem-statement {
+        	font-size: 1.5rem; /* ปรับขนาดตัวเลขโจทย์ในมือถือให้พอดีกับช่อง */
+        	padding: 5px 15px;
+		border-radius: 15px; /* <--- ปรับค่าตรงนี้ (ลดลงจากเดิมที่อาจจะเป็น 20px) */
+    		}
             .answer-section { font-size: 1.1rem; gap: 5px; margin-top: 15px; padding-bottom: 40px; } 
             .answer-input { width: 60px; height: 32px; font-size: 20px; }
             
