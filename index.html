@@ -1489,6 +1489,36 @@ let feedbackTitle = "🌟 สุดยอด";
         document.addEventListener('mousedown', function(e) { if (document.getElementById('game-screen').classList.contains('hidden')) return; const target = e.target; const isEditableInput = target.tagName === 'INPUT' && !target.readOnly; const isKeypad = target.classList.contains('key-btn') || target.closest('.key-btn'); const isButton = (target.tagName === 'BUTTON' || target.closest('button')) && !isKeypad; if (!isEditableInput && !isButton) { e.preventDefault(); if (focusedInput) focusedInput.focus(); } });
         document.querySelectorAll('.key-btn').forEach(btn => { btn.addEventListener('touchstart', function(e) { if (e.cancelable) e.preventDefault(); this.click(); if(focusedInput) focusedInput.focus(); }, { passive: false }); });
     };
+
+// ป้องกันการคลิกขวา
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+
+    // ป้องกันปุ่ม F12 และคีย์ลัด Inspect Element
+    document.addEventListener('keydown', function(e) {
+        // ป้องกัน F12
+        if (e.keyCode === 123) {
+            e.preventDefault();
+            return false;
+        }
+        // ป้องกัน Ctrl+Shift+I (Inspect)
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+            e.preventDefault();
+            return false;
+        }
+        // ป้องกัน Ctrl+Shift+J (Console)
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
+            e.preventDefault();
+            return false;
+        }
+        // ป้องกัน Ctrl+U (View Source)
+        if (e.ctrlKey && e.keyCode === 85) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
 </script>
 </body>
 </html>
