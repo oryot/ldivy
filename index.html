@@ -205,11 +205,37 @@
         .right-controls { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
         .mini-hud { display: flex; align-items: center; gap: 8px; background: #F0F8FF; padding: 0 10px; border-radius: 15px; font-size: 0.85rem; font-weight: bold; color: #2E86C1; border: 1px solid #AED6F1; white-space: nowrap; height: 40px; box-sizing: border-box; }
         .hud-item { display: flex; align-items: center; gap: 3px; }
-        .icon-btn { width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); padding: 0; will-change: transform; backface-visibility: hidden; transform: translateZ(0); }
-                     /* เมื่อเอาเมาส์ชี้ (คอมพิวเตอร์) หรือนิ้วแตะค้าง (มือถือ) */
-        .icon-btn:hover { transform: scale(1.1) !important; }
-	/* เมื่อมีการกดปุ่ม (นิ้วสัมผัสจอ) ให้ยุบตัวลง */
-	.icon-btn:active { transform: scale(0.95) !important; transition: transform 0.1s; }
+/* 1. สถานะปกติ: บังคับให้ขนาดเป็น 1 เท่าเสมอ */
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    padding: 0;
+    will-change: transform;
+    /* บังคับให้กลับมาขนาดปกติเมื่อไม่ได้กด */
+    transform: scale(1) !important; 
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 2. เฉพาะคอมพิวเตอร์: ให้ขยายเมื่อเอาเมาส์ชี้ */
+@media (hover: hover) {
+    .icon-btn:hover { 
+        transform: scale(1.1) !important; 
+    }
+}
+
+/* 3. ทั้งคอมและมือถือ: ให้ยุบตัวเมื่อกำลังกด */
+.icon-btn:active { 
+    transform: scale(0.9) !important; 
+    transition: transform 0.1s;
+}
 	/* บังคับให้ปุ่มที่ไม่มีสถานะ Hover หรือ Active กลับสู่ขนาดปกติ 100% */
 	.icon-btn:not(:active):not(:hover) { transform: scale(1) !important; }
         .btn-home-icon { background-color: #7F8C8D; } .btn-next-icon { background-color: #2E86C1; } .btn-next-icon svg { margin: 0; display: block; } .btn-table-icon { background-color: #f39c12; }
