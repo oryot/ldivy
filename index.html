@@ -207,6 +207,10 @@
         .hud-item { display: flex; align-items: center; gap: 3px; }
         .icon-btn { width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); padding: 0; will-change: transform; backface-visibility: hidden; transform: translateZ(0); }
         .icon-btn:hover { transform: scale(1.1) translateZ(0); }
+	.icon-btn:active { 
+    	transform: scale(0.95) !important; 
+    	transition: transform 0.1s;
+	}
         .btn-home-icon { background-color: #7F8C8D; } .btn-next-icon { background-color: #2E86C1; } .btn-next-icon svg { margin: 0; display: block; } .btn-table-icon { background-color: #f39c12; }
         .timer-warning { color: #c0392b !important; font-weight: 800; animation: pulse-red 0.5s infinite alternate; }
         @keyframes pulse-red { from { transform: scale(1); opacity: 1; text-shadow: 0 0 0 rgba(192, 57, 43, 0); } to { transform: scale(1.2); opacity: 1; text-shadow: 0 0 10px rgba(192, 57, 43, 0.5); } }
@@ -940,6 +944,8 @@
     function endCompetition() { document.getElementById('final-score').textContent = score; document.getElementById('result-modal').classList.remove('hidden'); }
     
     function checkAndGenerate() { 
+	// ล้างสถานะ Focus ออกจากปุ่มทันทีที่เริ่มทำงาน
+    	if (document.activeElement) document.activeElement.blur();
         const inputs = document.querySelectorAll('input.math-input, input.answer-input'); 
         let allCorrect = true; inputs.forEach(i => { if(!i.classList.contains('correct')) { allCorrect=false; } }); 
         if(allCorrect) { 
